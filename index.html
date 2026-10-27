@@ -21,21 +21,20 @@
     .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; }
     .store-name { font-size: 26px; font-weight: 700; color: var(--primary); }
     .store-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-    .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.6; padding: 5px; }
-    .admin-trigger:hover { opacity: 1; }
+    .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; z-index: 10; }
     .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
     .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); }
     .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
     .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
     .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
     .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
     .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
     .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
     .card-price { font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
-    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; margin-top: auto; display: block; border: none; cursor: pointer; }
+    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; margin-top: auto; display: block; border: none; }
     
     /* Panel Admin Modal */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
@@ -57,10 +56,10 @@
 <body>
 
   <header>
+    <button class="admin-trigger" onclick="openAdmin()" title="Panel de Administración">⚙️</button>
     <img id="store-logo" class="logo-img" src="" alt="Logo">
     <div id="display-title" class="store-name">Joliee Store</div>
     <div id="display-sub" class="store-sub">Catálogo Oficial</div>
-    <button class="admin-trigger" onclick="openAdmin()" id="admin-icon">⚙️</button>
   </header>
 
   <div class="container">
@@ -84,7 +83,6 @@
       <!-- TAB PRODUCTOS -->
       <div class="tab-pane active" id="prod-tab">
         <form onsubmit="saveProduct(event)">
-          <input type="hidden" id="prod-id">
           <div class="form-group"><label>Nombre del Producto</label><input type="text" id="prod-title" required></div>
           <div class="form-group"><label>Categoría</label><select id="prod-cat"></select></div>
           <div class="form-group"><label>Precio ($)</label><input type="text" id="prod-price" required></div>
@@ -114,20 +112,17 @@
         <div class="form-group"><label>URL del Logo (Opcional)</label><input type="url" id="setting-logo" placeholder="https://..."></div>
         <div class="form-group"><label>Teléfono WhatsApp (Con código de país)</label><input type="text" id="setting-phone" placeholder="584120000000"></div>
         <button onclick="saveSettings()" class="btn-submit">💾 Guardar Cambios</button>
-        
-        <hr style="margin:20px 0;">
-        <button onclick="copyClientLink()" class="btn-submit" style="background:#007bff;">🔗 Copiar Enlace para Clientes (Sin ⚙️)</button>
       </div>
 
     </div>
   </div>
 
   <script>
-    let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash y Perfumes", "Relojes", "Labiales"];
+    let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash y Perfumes"];
     let defaultProducts = [
-      { id: 1, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", desc: "" },
-      { id: 2, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", desc: "" },
-      { id: 3, title: "Splash Dupe Sol de Janeiro", cat: "Splash y Perfumes", price: "10.00", img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400", desc: "" }
+      { id: 1, title: "Protector Solar Disaar SPF 90+", cat: "Cuidado Facial", price: "10.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400" },
+      { id: 2, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400" },
+      { id: 3, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400" }
     ];
 
     let storeData = {
@@ -138,10 +133,6 @@
     };
 
     function init() {
-      const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get('modo') === 'cliente') {
-        document.getElementById('admin-icon').style.display = 'none';
-      }
       applySettings();
       renderCategories();
       renderCatalog();
@@ -170,20 +161,17 @@
       adminList.innerHTML = "";
 
       storeData.categories.forEach(cat => {
-        // Bar chips
         const chip = document.createElement('button');
         chip.className = `cat-chip ${storeData.activeCat === cat ? 'active' : ''}`;
         chip.innerText = cat;
         chip.onclick = () => { storeData.activeCat = cat; renderCategories(); renderCatalog(); };
         bar.appendChild(chip);
 
-        // Form select
         if (cat !== "Todos") {
           const opt = document.createElement('option');
           opt.value = cat; opt.innerText = cat;
           select.appendChild(opt);
 
-          // Admin cat list
           const item = document.createElement('div');
           item.className = "admin-item";
           item.innerHTML = `<span>${cat}</span><button class="btn-del" onclick="deleteCategory('${cat}')">Eliminar</button>`;
@@ -224,7 +212,6 @@
         grid.appendChild(card);
       });
 
-      // Render Admin Prod List
       storeData.products.forEach(p => {
         const item = document.createElement('div');
         item.className = "admin-item";
@@ -265,15 +252,17 @@
         id: Date.now(),
         title: document.getElementById('prod-title').value,
         cat: document.getElementById('prod-cat').value,
-        price: document.getElementById('prod-price').value,
+        price: document.getElementById('prod-price5').value || document.getElementById('prod-price').value,
         img: document.getElementById('prod-img').value,
         desc: document.getElementById('prod-desc').value
       };
+      // Corrección simple de campo de precio
+      newProd.price = document.getElementById('prod-price').value;
       storeData.products.push(newProd);
       localStorage.setItem('js_prods', JSON.stringify(storeData.products));
       renderCatalog();
       e.target.reset();
-      alert("¡Producto guardado!");
+      alert("¡Producto guardado exitosamente!");
     }
 
     function deleteProduct(id) {
@@ -290,12 +279,6 @@
       localStorage.setItem('js_settings', JSON.stringify(storeData.settings));
       applySettings();
       alert("¡Apariencia actualizada!");
-    }
-
-    function copyClientLink() {
-      const url = window.location.origin + window.location.pathname + '?modo=cliente';
-      navigator.clipboard.writeText(url);
-      alert("¡Enlace para clientes copiado al portapapeles!\n\n" + url);
     }
 
     init();
