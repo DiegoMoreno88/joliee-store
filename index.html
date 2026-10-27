@@ -28,13 +28,18 @@
     .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
     .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; }
-    .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; }
+    .card-img-container { position: relative; width: 100%; height: 180px; background: #eee; }
+    .card-img { width: 100%; height: 100%; object-fit: cover; }
+    .badge-status { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    .badge-available { background: #25d366; color: white; }
+    .badge-soldout { background: #ff4d4d; color: white; }
     .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
     .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
     .card-price { font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
     .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; margin-top: auto; display: block; border: none; }
+    .btn-ws.disabled { background: #ccc; pointer-events: none; }
     
     /* Panel Admin Modal */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
@@ -50,7 +55,10 @@
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
     .or-divider { text-align: center; font-size: 11px; color: var(--text-muted); margin: 4px 0; font-weight: 600; }
     .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
-    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .btn-cancel { background: #666; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 5px; display: none; }
+    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; gap: 10px; }
+    .admin-actions { display: flex; gap: 5px; }
+    .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
   </style>
 </head>
@@ -73,7 +81,7 @@
   <div class="modal" id="admin-modal">
     <div class="modal-content">
       <button class="close-btn" onclick="closeAdmin()">&times;</button>
-      <h2>⚙️ Panel de Control</h2>
+      <h2 id="modal-main-title">⚙️ Panel de Control</h2>
       
       <div class="admin-tabs">
         <button class="tab-btn active" onclick="switchTab('prod-tab')">📦 Productos</button>
@@ -84,10 +92,19 @@
       <!-- TAB PRODUCTOS -->
       <div class="tab-pane active" id="prod-tab">
         <form onsubmit="saveProduct(event)">
+          <input type="hidden" id="editing-prod-id">
           <div class="form-group"><label>Nombre del Producto</label><input type="text" id="prod-title" required></div>
           <div class="form-group"><label>Categoría</label><select id="prod-cat"></select></div>
           <div class="form-group"><label>Precio ($)</label><input type="text" id="prod-price" required></div>
           
+          <div class="form-group">
+            <label>Estado del Producto</label>
+            <select id="prod-status">
+              <option value="Disponible">Disponible</option>
+              <option value="Agotado">Agotado</option>
+            </select>
+          </div>
+
           <!-- IMAGEN PRODUCTO: AMBAS OPCIONES -->
           <div class="form-group">
             <label>Subir Imagen desde dispositivo</label>
@@ -97,8 +114,10 @@
           </div>
 
           <div class="form-group"><label>Descripción</label><textarea id="prod-desc" rows="2"></textarea></div>
-          <button type="submit" class="btn-submit">💾 Guardar Producto</button>
+          <button type="submit" id="btn-save-prod" class="btn-submit">💾 Guardar Producto</button>
+          <button type="button" id="btn-cancel-edit" class="btn-cancel" onclick="resetProductForm()">Cancelar Edición</button>
         </form>
+
         <h3 style="margin-top:20px; margin-bottom:10px;">Lista de Productos</h3>
         <div id="admin-prod-list"></div>
       </div>
@@ -137,9 +156,9 @@
   <script>
     let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash y Perfumes"];
     let defaultProducts = [
-      { id: 1, title: "Protector Solar Disaar SPF 90+", cat: "Cuidado Facial", price: "10.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400" },
-      { id: 2, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400" },
-      { id: 3, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400" }
+      { id: 1, title: "Protector Solar Disaar SPF 90+", cat: "Cuidado Facial", price: "10.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible" },
+      { id: 2, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible" },
+      { id: 3, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible" }
     ];
 
     let storeData = {
@@ -222,14 +241,23 @@
         card.className = "card";
         const phone = storeData.settings.phone ? storeData.settings.phone : "";
         const wsMsg = `https://wa.me/${phone}?text=${encodeURIComponent('Hola! Me interesa: ' + p.title + ' ($' + p.price + ')')}`;
+        const isAgotado = p.status === "Agotado";
+        const badgeHtml = isAgotado 
+          ? `<span class="badge-status badge-soldout">Agotado</span>` 
+          : `<span class="badge-status badge-available">Disponible</span>`;
+        const btnClass = isAgotado ? "btn-ws disabled" : "btn-ws";
+        const btnText = isAgotado ? "No disponible" : "Pedir por WhatsApp";
         
         card.innerHTML = `
-          <img src="${p.img}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200'">
+          <div class="card-img-container">
+            ${badgeHtml}
+            <img src="${p.img}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200'">
+          </div>
           <div class="card-content">
             <span class="card-cat">${p.cat}</span>
             <div class="card-title">${p.title}</div>
             <div class="card-price">$${p.price}</div>
-            <a href="${wsMsg}" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+            <a href="${wsMsg}" class="${btnClass}" ${isAgotado ? 'tabindex="-1" aria-disabled="true"' : 'target="_blank"'}>${btnText}</a>
           </div>
         `;
         grid.appendChild(card);
@@ -239,14 +267,20 @@
         storeData.products.forEach(p => {
           const item = document.createElement('div');
           item.className = "admin-item";
-          item.innerHTML = `<span><strong>${p.title}</strong> ($${p.price})</span><button class="btn-del" onclick="deleteProduct(${p.id})">Eliminar</button>`;
+          item.innerHTML = `
+            <span><strong>${p.title}</strong> ($${p.price}) - <em>${p.status || 'Disponible'}</em></span>
+            <div class="admin-actions">
+              <button class="btn-edit" onclick="editProduct(${p.id})">Editar</button>
+              <button class="btn-del" onclick="deleteProduct(${p.id})">Eliminar</button>
+            </div>
+          `;
           adminProdList.appendChild(item);
         });
       }
     }
 
     function openAdmin() { document.getElementById('admin-modal').style.display = 'flex'; }
-    function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+    function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; resetProductForm(); }
     
     function switchTab(tabId) {
       document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
@@ -275,42 +309,85 @@
 
     function saveProduct(e) {
       e.preventDefault();
+      const editingId = document.getElementById('editing-prod-id').value;
       const title = document.getElementById('prod-title')?.value || '';
       const cat = document.getElementById('prod-cat')?.value || '';
       const price = document.getElementById('prod-price')?.value || '';
+      const status = document.getElementById('prod-status')?.value || 'Disponible';
       const desc = document.getElementById('prod-desc')?.value || '';
       const fileInput = document.getElementById('prod-img-file');
       const urlInput = document.getElementById('prod-img-url')?.value.trim();
 
-      const processAndSave = (finalImg) => {
-        if (!finalImg) {
-          alert("Por favor sube una imagen o pega una URL de imagen.");
-          return;
+      const existingProd = editingId ? storeData.products.find(p => p.id == editingId) : null;
+      let defaultImg = existingProd ? existingProd.img : "https://via.placeholder.com/200";
+
+      const finishSave = (finalImg) => {
+        if (editingId) {
+          // Editar producto existente
+          storeData.products = storeData.products.map(p => {
+            if (p.id == editingId) {
+              return { id: Number(editingId), title, cat, price, status, img: finalImg || p.img, desc };
+            }
+            return p;
+          });
+          alert("¡Producto actualizado exitosamente!");
+        } else {
+          // Crear nuevo producto
+          const newProd = {
+            id: Date.now(),
+            title,
+            cat,
+            price,
+            status,
+            img: finalImg || defaultImg,
+            desc
+          };
+          storeData.products.push(newProd);
+          alert("¡Producto guardado exitosamente!");
         }
-        const newProd = {
-          id: Date.now(),
-          title,
-          cat,
-          price,
-          img: finalImg,
-          desc
-        };
-        storeData.products.push(newProd);
+
         localStorage.setItem('js_prods', JSON.stringify(storeData.products));
         renderCatalog();
-        e.target.reset();
-        alert("¡Producto guardado exitosamente!");
+        resetProductForm();
       };
 
       if (fileInput && fileInput.files && fileInput.files[0]) {
         const reader = new FileReader();
         reader.onload = function(uploadEvent) {
-          processAndSave(uploadEvent.target.result);
+          finishSave(uploadEvent.target.result);
         };
         reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput) {
+        finishSave(urlInput);
       } else {
-        processAndSave(urlInput);
+        finishSave(existingProd ? existingProd.img : defaultImg);
       }
+    }
+
+    function editProduct(id) {
+      const p = storeData.products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('editing-prod-id').value = p.id;
+      document.getElementById('prod-title').value = p.title;
+      document.getElementById('prod-cat').value = p.cat;
+      document.getElementById('prod-price').value = p.price;
+      document.getElementById('prod-status').value = p.status || "Disponible";
+      document.getElementById('prod-desc').value = p.desc || "";
+      document.getElementById('prod-img-url').value = p.img.startsWith('data:') ? '' : p.img;
+
+      document.getElementById('btn-save-prod').innerText = "💾 Actualizar Producto";
+      document.getElementById('btn-cancel-edit').style.display = "block";
+      
+      // Ir a la pestaña de productos por si acaso
+      switchTab('prod-tab');
+    }
+
+    function resetProductForm() {
+      document.getElementById('editing-prod-id').value = "";
+      document.querySelector('#prod-tab form').reset();
+      document.getElementById('btn-save-prod').innerText = "💾 Guardar Producto";
+      document.getElementById('btn-cancel-edit').style.display = "none";
     }
 
     function deleteProduct(id) {
@@ -347,11 +424,12 @@
       } else if (urlInput) {
         updateData(urlInput);
       } else {
-        updateData(undefined); // Mantiene el logo previo si no se seleccionó ni pegó nada nuevo
+        updateData(undefined);
       }
     }
 
     init();
   </script>
 </body>
+</html>
 </html>
