@@ -18,7 +18,7 @@
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
     header { background: var(--surface); padding: 20px; text-align: center; border-bottom: 1px solid var(--border); position: relative; }
-    .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; }
+    .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; object-fit: contain; }
     .store-name { font-size: 26px; font-weight: 700; color: var(--primary); }
     .store-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
     .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; z-index: 10; }
@@ -48,6 +48,7 @@
     .form-group { margin-bottom: 12px; }
     .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
     .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+    .or-divider { text-align: center; font-size: 11px; color: var(--text-muted); margin: 4px 0; font-weight: 600; }
     .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
     .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
     .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
@@ -86,7 +87,15 @@
           <div class="form-group"><label>Nombre del Producto</label><input type="text" id="prod-title" required></div>
           <div class="form-group"><label>Categoría</label><select id="prod-cat"></select></div>
           <div class="form-group"><label>Precio ($)</label><input type="text" id="prod-price" required></div>
-          <div class="form-group"><label>URL de Imagen</label><input type="url" id="prod-img" placeholder="https://..." required></div>
+          
+          <!-- IMAGEN PRODUCTO: AMBAS OPCIONES -->
+          <div class="form-group">
+            <label>Subir Imagen desde dispositivo</label>
+            <input type="file" id="prod-img-file" accept="image/*">
+            <div class="or-divider">— O PEGA UN ENLACE WEB —</div>
+            <input type="url" id="prod-img-url" placeholder="https://ejemplo.com/imagen.jpg">
+          </div>
+
           <div class="form-group"><label>Descripción</label><textarea id="prod-desc" rows="2"></textarea></div>
           <button type="submit" class="btn-submit">💾 Guardar Producto</button>
         </form>
@@ -109,7 +118,15 @@
       <div class="tab-pane" id="settings-tab">
         <div class="form-group"><label>Nombre de la Tienda</label><input type="text" id="setting-title" value="Joliee Store"></div>
         <div class="form-group"><label>Subtítulo (Opcional)</label><input type="text" id="setting-sub" value="Catálogo Oficial"></div>
-        <div class="form-group"><label>URL del Logo (Opcional)</label><input type="url" id="setting-logo" placeholder="https://..."></div>
+        
+        <!-- LOGO: AMBAS OPCIONES -->
+        <div class="form-group">
+          <label>Subir Logo desde dispositivo</label>
+          <input type="file" id="setting-logo-file" accept="image/*">
+          <div class="or-divider">— O PEGA UN ENLACE WEB —</div>
+          <input type="url" id="setting-logo-url" placeholder="https://ejemplo.com/logo.jpg">
+        </div>
+
         <div class="form-group"><label>Teléfono WhatsApp (Con código de país)</label><input type="text" id="setting-phone" placeholder="584120000000"></div>
         <button onclick="saveSettings()" class="btn-submit">💾 Guardar Cambios</button>
       </div>
@@ -258,27 +275,42 @@
 
     function saveProduct(e) {
       e.preventDefault();
-      
       const title = document.getElementById('prod-title')?.value || '';
       const cat = document.getElementById('prod-cat')?.value || '';
       const price = document.getElementById('prod-price')?.value || '';
-      const img = document.getElementById('prod-img')?.value || '';
       const desc = document.getElementById('prod-desc')?.value || '';
+      const fileInput = document.getElementById('prod-img-file');
+      const urlInput = document.getElementById('prod-img-url')?.value.trim();
 
-      const newProd = {
-        id: Date.now(),
-        title,
-        cat,
-        price,
-        img,
-        desc
+      const processAndSave = (finalImg) => {
+        if (!finalImg) {
+          alert("Por favor sube una imagen o pega una URL de imagen.");
+          return;
+        }
+        const newProd = {
+          id: Date.now(),
+          title,
+          cat,
+          price,
+          img: finalImg,
+          desc
+        };
+        storeData.products.push(newProd);
+        localStorage.setItem('js_prods', JSON.stringify(storeData.products));
+        renderCatalog();
+        e.target.reset();
+        alert("¡Producto guardado exitosamente!");
       };
 
-      storeData.products.push(newProd);
-      localStorage.setItem('js_prods', JSON.stringify(storeData.products));
-      renderCatalog();
-      e.target.reset();
-      alert("¡Producto guardado exitosamente!");
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          processAndSave(uploadEvent.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else {
+        processAndSave(urlInput);
+      }
     }
 
     function deleteProduct(id) {
@@ -288,13 +320,35 @@
     }
 
     function saveSettings() {
-      storeData.settings.title = document.getElementById('setting-title')?.value || "Joliee Store";
-      storeData.settings.sub = document.getElementById('setting-sub')?.value || "";
-      storeData.settings.logo = document.getElementById('setting-logo')?.value || "";
-      storeData.settings.phone = document.getElementById('setting-phone')?.value || "";
-      localStorage.setItem('js_settings', JSON.stringify(storeData.settings));
-      applySettings();
-      alert("¡Apariencia actualizada!");
+      const title = document.getElementById('setting-title')?.value || "Joliee Store";
+      const sub = document.getElementById('setting-sub')?.value || "";
+      const phone = document.getElementById('setting-phone')?.value || "";
+      const fileInput = document.getElementById('setting-logo-file');
+      const urlInput = document.getElementById('setting-logo-url')?.value.trim();
+
+      const updateData = (logoSrc) => {
+        storeData.settings.title = title;
+        storeData.settings.sub = sub;
+        if (logoSrc !== undefined) {
+          storeData.settings.logo = logoSrc;
+        }
+        storeData.settings.phone = phone;
+        localStorage.setItem('js_settings', JSON.stringify(storeData.settings));
+        applySettings();
+        alert("¡Apariencia actualizada!");
+      };
+
+      if (fileInput && fileInput.files && fileInput.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(uploadEvent) {
+          updateData(uploadEvent.target.result);
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      } else if (urlInput) {
+        updateData(urlInput);
+      } else {
+        updateData(undefined); // Mantiene el logo previo si no se seleccionó ni pegó nada nuevo
+      }
     }
 
     init();
