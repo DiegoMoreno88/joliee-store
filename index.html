@@ -3,152 +3,302 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Joliee Store - Catálogo Digital</title>
+  <title id="page-title">Joliee Store - Catálogo Oficial</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary-color: #8B0000;
-      --bg-color: #f8f9fa;
-      --card-bg: #ffffff;
-      --text-color: #333333;
+      --primary: #800020;
+      --primary-hover: #5d0017;
+      --bg: #f8f6f6;
+      --surface: #ffffff;
+      --text: #2b2b2b;
+      --text-muted: #666666;
+      --border: #e8e3e3;
     }
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: var(--card-bg);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    header h1 {
-      margin: 0;
-      color: var(--primary-color);
-      font-size: 28px;
-    }
-    .container {
-      max-width: 1200px;
-      margin: 20px auto;
-      padding: 0 15px;
-    }
-    .filters {
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-    }
-    .filter-btn {
-      background: #e9ecef;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      white-space: nowrap;
-      font-weight: 600;
-    }
-    .filter-btn.active {
-      background: var(--primary-color);
-      color: white;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .card {
-      background: var(--card-bg);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-      display: flex;
-      flex-direction: column;
-    }
-    .card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-    .card-body {
-      padding: 15px;
-      display: flex;
-      flex-direction: column;
-      flex-grow: 1;
-    }
-    .card-title {
-      font-size: 16px;
-      font-weight: bold;
-      margin: 0 0 8px 0;
-    }
-    .card-price {
-      font-size: 18px;
-      color: var(--primary-color);
-      font-weight: bold;
-      margin-bottom: 12px;
-    }
-    .btn-ws {
-      background-color: #25D366;
-      color: white;
-      text-decoration: none;
-      text-align: center;
-      padding: 10px;
-      border-radius: 8px;
-      font-weight: bold;
-      margin-top: auto;
-      display: block;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
+    header { background: var(--surface); padding: 20px; text-align: center; border-bottom: 1px solid var(--border); position: relative; }
+    .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; }
+    .store-name { font-size: 26px; font-weight: 700; color: var(--primary); }
+    .store-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
+    .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 20px; cursor: pointer; opacity: 0.6; padding: 5px; }
+    .admin-trigger:hover { opacity: 1; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
+    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); }
+    .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
+    .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
+    .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; }
+    .card-img { width: 100%; height: 180px; object-fit: cover; background: #eee; }
+    .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+    .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
+    .card-price { font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; margin-top: auto; display: block; border: none; cursor: pointer; }
+    
+    /* Panel Admin Modal */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+    .modal-content { background: var(--surface); width: 95%; max-width: 650px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 20px; position: relative; }
+    .close-btn { position: absolute; right: 20px; top: 20px; font-size: 24px; border: none; background: none; cursor: pointer; }
+    .admin-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 15px; }
+    .tab-btn { padding: 8px 14px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; }
+    .tab-btn.active { color: var(--primary); border-color: var(--primary); }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+    .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
+    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; }
+    .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
   </style>
 </head>
 <body>
-  <header>
-    <h1 id="store-title">Joliee Store</h1>
-    <p style="margin:5px 0 0 0; color:#666; font-size:14px;">Catálogo Oficial</p>
-  </header>
-  
-  <div class="container">
-    <div class="filters" id="categories-bar">
-      <button class="filter-btn active">Todos</button>
-      <button class="filter-btn">Cuidado Facial</button>
-      <button class="filter-btn">Bases y Correctores</button>
-      <button class="filter-btn">Polvos y Rubores</button>
-      <button class="filter-btn">Splash y Perfumes</button>
-    </div>
 
-    <div class="grid" id="products-grid">
-      <!-- Producto 1 -->
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400" alt="Protector Solar">
-        <div class="card-body">
-          <div class="card-title">Protector Solar Disaar SPF 90+</div>
-          <div class="card-price">$10.00</div>
-          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20el%20Protector%20Solar%20Disaar" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
-        </div>
+  <header>
+    <img id="store-logo" class="logo-img" src="" alt="Logo">
+    <div id="display-title" class="store-name">Joliee Store</div>
+    <div id="display-sub" class="store-sub">Catálogo Oficial</div>
+    <button class="admin-trigger" onclick="openAdmin()" id="admin-icon">⚙️</button>
+  </header>
+
+  <div class="container">
+    <input type="text" id="search-input" class="search-box" placeholder="Buscar por producto..." oninput="renderCatalog()">
+    <div class="categories-bar" id="cat-chips"></div>
+    <div class="products-grid" id="catalog-grid"></div>
+  </div>
+
+  <!-- MODAL ADMIN -->
+  <div class="modal" id="admin-modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeAdmin()">&times;</button>
+      <h2>⚙️ Panel de Control</h2>
+      
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchTab('prod-tab')">📦 Productos</button>
+        <button class="tab-btn" onclick="switchTab('cat-tab')">🏷️ Categorías</button>
+        <button class="tab-btn" onclick="switchTab('settings-tab')">🎨 Apariencia</button>
       </div>
-      <!-- Producto 2 -->
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400" alt="Base Sheglam">
-        <div class="card-body">
-          <div class="card-title">Base Matte Deluxe Sheglam Pink</div>
-          <div class="card-price">$8.50</div>
-          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20la%20Base%20Matte%20Sheglam" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
-        </div>
+
+      <!-- TAB PRODUCTOS -->
+      <div class="tab-pane active" id="prod-tab">
+        <form onsubmit="saveProduct(event)">
+          <input type="hidden" id="prod-id">
+          <div class="form-group"><label>Nombre del Producto</label><input type="text" id="prod-title" required></div>
+          <div class="form-group"><label>Categoría</label><select id="prod-cat"></select></div>
+          <div class="form-group"><label>Precio ($)</label><input type="text" id="prod-price" required></div>
+          <div class="form-group"><label>URL de Imagen</label><input type="url" id="prod-img" placeholder="https://..." required></div>
+          <div class="form-group"><label>Descripción</label><textarea id="prod-desc" rows="2"></textarea></div>
+          <button type="submit" class="btn-submit">💾 Guardar Producto</button>
+        </form>
+        <h3 style="margin-top:20px; margin-bottom:10px;">Lista de Productos</h3>
+        <div id="admin-prod-list"></div>
       </div>
-      <!-- Producto 3 -->
-      <div class="card">
-        <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400" alt="Rubor Salomé">
-        <div class="card-body">
-          <div class="card-title">Rubor Líquido Profesional Salomé</div>
-          <div class="card-price">$10.00</div>
-          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20el%20Rubor%20Salome" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+
+      <!-- TAB CATEGORIAS -->
+      <div class="tab-pane" id="cat-tab">
+        <div class="form-group">
+          <label>Nueva Categoría</label>
+          <input type="text" id="new-cat-input" placeholder="Ej: Relojes">
         </div>
+        <button onclick="addCategory()" class="btn-submit">➕ Agregar Categoría</button>
+        <h3 style="margin-top:20px; margin-bottom:10px;">Categorías Actuales</h3>
+        <div id="admin-cat-list"></div>
       </div>
+
+      <!-- TAB APARIENCIA -->
+      <div class="tab-pane" id="settings-tab">
+        <div class="form-group"><label>Nombre de la Tienda</label><input type="text" id="setting-title" value="Joliee Store"></div>
+        <div class="form-group"><label>Subtítulo (Opcional)</label><input type="text" id="setting-sub" value="Catálogo Oficial"></div>
+        <div class="form-group"><label>URL del Logo (Opcional)</label><input type="url" id="setting-logo" placeholder="https://..."></div>
+        <div class="form-group"><label>Teléfono WhatsApp (Con código de país)</label><input type="text" id="setting-phone" placeholder="584120000000"></div>
+        <button onclick="saveSettings()" class="btn-submit">💾 Guardar Cambios</button>
+        
+        <hr style="margin:20px 0;">
+        <button onclick="copyClientLink()" class="btn-submit" style="background:#007bff;">🔗 Copiar Enlace para Clientes (Sin ⚙️)</button>
+      </div>
+
     </div>
   </div>
+
+  <script>
+    let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash y Perfumes", "Relojes", "Labiales"];
+    let defaultProducts = [
+      { id: 1, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", desc: "" },
+      { id: 2, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", desc: "" },
+      { id: 3, title: "Splash Dupe Sol de Janeiro", cat: "Splash y Perfumes", price: "10.00", img: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=400", desc: "" }
+    ];
+
+    let storeData = {
+      categories: JSON.parse(localStorage.getItem('js_cats')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods')) || defaultProducts,
+      settings: JSON.parse(localStorage.getItem('js_settings')) || { title: "Joliee Store", sub: "Catálogo Oficial", logo: "", phone: "" },
+      activeCat: "Todos"
+    };
+
+    function init() {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('modo') === 'cliente') {
+        document.getElementById('admin-icon').style.display = 'none';
+      }
+      applySettings();
+      renderCategories();
+      renderCatalog();
+    }
+
+    function applySettings() {
+      document.getElementById('display-title').innerText = storeData.settings.title || "Joliee Store";
+      document.getElementById('display-sub').innerText = storeData.settings.sub || "";
+      document.getElementById('page-title').innerText = storeData.settings.title || "Joliee Store";
+      const logoEl = document.getElementById('store-logo');
+      if (storeData.settings.logo) {
+        logoEl.src = storeData.settings.logo;
+        logoEl.style.display = "block";
+      } else {
+        logoEl.style.display = "none";
+      }
+    }
+
+    function renderCategories() {
+      const bar = document.getElementById('cat-chips');
+      const select = document.getElementById('prod-cat');
+      const adminList = document.getElementById('admin-cat-list');
+      
+      bar.innerHTML = "";
+      select.innerHTML = "";
+      adminList.innerHTML = "";
+
+      storeData.categories.forEach(cat => {
+        // Bar chips
+        const chip = document.createElement('button');
+        chip.className = `cat-chip ${storeData.activeCat === cat ? 'active' : ''}`;
+        chip.innerText = cat;
+        chip.onclick = () => { storeData.activeCat = cat; renderCategories(); renderCatalog(); };
+        bar.appendChild(chip);
+
+        // Form select
+        if (cat !== "Todos") {
+          const opt = document.createElement('option');
+          opt.value = cat; opt.innerText = cat;
+          select.appendChild(opt);
+
+          // Admin cat list
+          const item = document.createElement('div');
+          item.className = "admin-item";
+          item.innerHTML = `<span>${cat}</span><button class="btn-del" onclick="deleteCategory('${cat}')">Eliminar</button>`;
+          adminList.appendChild(item);
+        }
+      });
+    }
+
+    function renderCatalog() {
+      const grid = document.getElementById('catalog-grid');
+      const adminProdList = document.getElementById('admin-prod-list');
+      const search = document.getElementById('search-input').value.toLowerCase();
+      
+      grid.innerHTML = "";
+      adminProdList.innerHTML = "";
+
+      const filtered = storeData.products.filter(p => {
+        const matchCat = storeData.activeCat === "Todos" || p.cat === storeData.activeCat;
+        const matchSearch = p.title.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      filtered.forEach(p => {
+        const card = document.createElement('div');
+        card.className = "card";
+        const phone = storeData.settings.phone ? storeData.settings.phone : "";
+        const wsMsg = `https://wa.me/${phone}?text=${encodeURIComponent('Hola! Me interesa: ' + p.title + ' ($' + p.price + ')')}`;
+        
+        card.innerHTML = `
+          <img src="${p.img}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200'">
+          <div class="card-content">
+            <span class="card-cat">${p.cat}</span>
+            <div class="card-title">${p.title}</div>
+            <div class="card-price">$${p.price}</div>
+            <a href="${wsMsg}" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+
+      // Render Admin Prod List
+      storeData.products.forEach(p => {
+        const item = document.createElement('div');
+        item.className = "admin-item";
+        item.innerHTML = `<span><strong>${p.title}</strong> ($${p.price})</span><button class="btn-del" onclick="deleteProduct(${p.id})">Eliminar</button>`;
+        adminProdList.appendChild(item);
+      });
+    }
+
+    function openAdmin() { document.getElementById('admin-modal').style.display = 'flex'; }
+    function closeAdmin() { document.getElementById('admin-modal').style.display = 'none'; }
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function addCategory() {
+      const input = document.getElementById('new-cat-input');
+      const val = input.value.trim();
+      if (val && !storeData.categories.includes(val)) {
+        storeData.categories.push(val);
+        localStorage.setItem('js_cats', JSON.stringify(storeData.categories));
+        input.value = "";
+        renderCategories();
+      }
+    }
+
+    function deleteCategory(cat) {
+      storeData.categories = storeData.categories.filter(c => c !== cat);
+      localStorage.setItem('js_cats', JSON.stringify(storeData.categories));
+      renderCategories();
+    }
+
+    function saveProduct(e) {
+      e.preventDefault();
+      const newProd = {
+        id: Date.now(),
+        title: document.getElementById('prod-title').value,
+        cat: document.getElementById('prod-cat').value,
+        price: document.getElementById('prod-price').value,
+        img: document.getElementById('prod-img').value,
+        desc: document.getElementById('prod-desc').value
+      };
+      storeData.products.push(newProd);
+      localStorage.setItem('js_prods', JSON.stringify(storeData.products));
+      renderCatalog();
+      e.target.reset();
+      alert("¡Producto guardado!");
+    }
+
+    function deleteProduct(id) {
+      storeData.products = storeData.products.filter(p => p.id !== id);
+      localStorage.setItem('js_prods', JSON.stringify(storeData.products));
+      renderCatalog();
+    }
+
+    function saveSettings() {
+      storeData.settings.title = document.getElementById('setting-title').value;
+      storeData.settings.sub = document.getElementById('setting-sub').value;
+      storeData.settings.logo = document.getElementById('setting-logo').value;
+      storeData.settings.phone = document.getElementById('setting-phone').value;
+      localStorage.setItem('js_settings', JSON.stringify(storeData.settings));
+      applySettings();
+      alert("¡Apariencia actualizada!");
+    }
+
+    function copyClientLink() {
+      const url = window.location.origin + window.location.pathname + '?modo=cliente';
+      navigator.clipboard.writeText(url);
+      alert("¡Enlace para clientes copiado al portapapeles!\n\n" + url);
+    }
+
+    init();
+  </script>
 </body>
 </html>
