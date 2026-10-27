@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Joliee Store - Catálogo Digital</title>
+  <style>
+    :root {
+      --primary-color: #8B0000;
+      --bg-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: var(--card-bg);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    header h1 {
+      margin: 0;
+      color: var(--primary-color);
+      font-size: 28px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .filter-btn {
+      background: #e9ecef;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .filter-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      display: flex;
+      flex-direction: column;
+    }
+    .card img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+    }
+    .card-body {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+    .card-title {
+      font-size: 16px;
+      font-weight: bold;
+      margin: 0 0 8px 0;
+    }
+    .card-price {
+      font-size: 18px;
+      color: var(--primary-color);
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+    .btn-ws {
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: bold;
+      margin-top: auto;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="store-title">Joliee Store</h1>
+    <p style="margin:5px 0 0 0; color:#666; font-size:14px;">Catálogo Oficial</p>
+  </header>
+  
+  <div class="container">
+    <div class="filters" id="categories-bar">
+      <button class="filter-btn active">Todos</button>
+      <button class="filter-btn">Cuidado Facial</button>
+      <button class="filter-btn">Bases y Correctores</button>
+      <button class="filter-btn">Polvos y Rubores</button>
+      <button class="filter-btn">Splash y Perfumes</button>
+    </div>
+
+    <div class="grid" id="products-grid">
+      <!-- Producto 1 -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1598440947619-2c35fc9aa908?w=400" alt="Protector Solar">
+        <div class="card-body">
+          <div class="card-title">Protector Solar Disaar SPF 90+</div>
+          <div class="card-price">$10.00</div>
+          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20el%20Protector%20Solar%20Disaar" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+        </div>
+      </div>
+      <!-- Producto 2 -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400" alt="Base Sheglam">
+        <div class="card-body">
+          <div class="card-title">Base Matte Deluxe Sheglam Pink</div>
+          <div class="card-price">$8.50</div>
+          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20la%20Base%20Matte%20Sheglam" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+        </div>
+      </div>
+      <!-- Producto 3 -->
+      <div class="card">
+        <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400" alt="Rubor Salomé">
+        <div class="card-body">
+          <div class="card-title">Rubor Líquido Profesional Salomé</div>
+          <div class="card-price">$10.00</div>
+          <a href="https://wa.me/?text=Hola!%20Me%20interesa%20el%20Rubor%20Salome" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
