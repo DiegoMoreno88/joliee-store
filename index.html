@@ -216,19 +216,19 @@
       { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." }
     ];
 
-    // FORZAMOS LA LIMPIEZA DE MEMORIA ANTIGUA PARA ESTA VERSIÓN
-    if (!localStorage.getItem('js_store_v2_reset')) {
-      localStorage.removeItem('js_prods');
-      localStorage.removeItem('js_cats');
-      localStorage.setItem('js_store_v2_reset', 'true');
-    }
-
+    // USAMOS LLAVES NUEVAS (_v3) PARA FORZAR LA CARGA DE LOS 24 PRODUCTOS
     let storeData = {
-      categories: JSON.parse(localStorage.getItem('js_cats')) || defaultCategories,
-      products: JSON.parse(localStorage.getItem('js_prods')) || defaultProducts,
+      categories: JSON.parse(localStorage.getItem('js_cats_v3')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods_v3')) || defaultProducts,
       settings: JSON.parse(localStorage.getItem('js_settings')) || { title: "Joliee Store", sub: "Catálogo Oficial", logo: "", phone: "" },
       activeCat: "Todos"
     };
+
+    // Aseguramos que se guarden por primera vez en esta versión
+    if (!localStorage.getItem('js_prods_v3')) {
+      localStorage.setItem('js_prods_v3', JSON.stringify(defaultProducts));
+      localStorage.setItem('js_cats_v3', JSON.stringify(defaultCategories));
+    }
 
     function init() {
       applySettings();
@@ -392,7 +392,7 @@
       const val = input.value.trim();
       if (val && !storeData.categories.includes(val)) {
         storeData.categories.push(val);
-        localStorage.setItem('js_cats', JSON.stringify(storeData.categories));
+        localStorage.setItem('js_cats_v3', JSON.stringify(storeData.categories));
         input.value = "";
         renderCategories();
       }
@@ -400,7 +400,7 @@
 
     function deleteCategory(cat) {
       storeData.categories = storeData.categories.filter(c => c !== cat);
-      localStorage.setItem('js_cats', JSON.stringify(storeData.categories));
+      localStorage.setItem('js_cats_v3', JSON.stringify(storeData.categories));
       renderCategories();
     }
 
@@ -441,7 +441,7 @@
           alert("¡Producto guardado exitosamente!");
         }
 
-        localStorage.setItem('js_prods', JSON.stringify(storeData.products));
+        localStorage.setItem('js_prods_v3', JSON.stringify(storeData.products));
         renderCatalog();
         resetProductForm();
       };
@@ -487,7 +487,7 @@
 
     function deleteProduct(id) {
       storeData.products = storeData.products.filter(p => p.id !== id);
-      localStorage.setItem('js_prods', JSON.stringify(storeData.products));
+      localStorage.setItem('js_prods_v3', JSON.stringify(storeData.products));
       renderCatalog();
     }
 
