@@ -515,10 +515,19 @@
       { id: 545, title: "Reloj Vintage Vienna Cuadrado Premium", cat: "Relojes", price: "10.00", img: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400", status: "Disponible", visibility: "Ocultar", desc: "Descubre la elegancia atemporal con nuestros relojes estilo vintage." }
     ];
 
+    // FORZAR LIMPIEZA DE CACHÉ Y CARGA DE LA NUEVA VERSIÓN V11
+    const DB_VERSION = "js_db_v11";
+    if (!localStorage.getItem(DB_VERSION)) {
+      localStorage.clear(); // Limpia la caché anterior por completo
+      localStorage.setItem(DB_VERSION, "true");
+      localStorage.setItem('js_prods_v11', JSON.stringify(defaultProducts));
+      localStorage.setItem('js_cats_v11', JSON.stringify(defaultCategories));
+    }
+
     let storeData = {
-      categories: JSON.parse(localStorage.getItem('js_cats_v10')) || defaultCategories,
-      products: JSON.parse(localStorage.getItem('js_prods_v10')) || defaultProducts,
-      settings: JSON.parse(localStorage.getItem('js_settings_v10')) || {
+      categories: JSON.parse(localStorage.getItem('js_cats_v11')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods_v11')) || defaultProducts,
+      settings: JSON.parse(localStorage.getItem('js_settings_v11')) || {
         title: "Joliee Store",
         sub: "Catálogo Oficial",
         logo: "https://i.ibb.co/689L53H/joliee-store-logo.png",
@@ -533,12 +542,6 @@
       currentPage: 1,
       itemsPerPage: 24
     };
-
-    if (!localStorage.getItem('js_prods_v10')) {
-      localStorage.setItem('js_prods_v10', JSON.stringify(defaultProducts));
-      localStorage.setItem('js_cats_v10', JSON.stringify(defaultCategories));
-      localStorage.setItem('js_settings_v10', JSON.stringify(storeData.settings));
-    }
 
     function init() {
       applySettings();
@@ -805,7 +808,7 @@
       const val = input.value.trim();
       if (val && !storeData.categories.includes(val)) {
         storeData.categories.push(val);
-        localStorage.setItem('js_cats_v10', JSON.stringify(storeData.categories));
+        localStorage.setItem('js_cats_v11', JSON.stringify(storeData.categories));
         input.value = "";
         renderCategories();
       }
@@ -813,7 +816,7 @@
 
     function deleteCategory(cat) {
       storeData.categories = storeData.categories.filter(c => c !== cat);
-      localStorage.setItem('js_cats_v10', JSON.stringify(storeData.categories));
+      localStorage.setItem('js_cats_v11', JSON.stringify(storeData.categories));
       renderCategories();
     }
 
@@ -856,7 +859,7 @@
           alert("¡Producto guardado exitosamente!");
         }
 
-        localStorage.setItem('js_prods_v10', JSON.stringify(storeData.products));
+        localStorage.setItem('js_prods_v11', JSON.stringify(storeData.products));
         renderCatalog();
         resetProductForm();
       };
@@ -903,7 +906,7 @@
 
     function deleteProduct(id) {
       storeData.products = storeData.products.filter(p => p.id !== id);
-      localStorage.setItem('js_prods_v10', JSON.stringify(storeData.products));
+      localStorage.setItem('js_prods_v11', JSON.stringify(storeData.products));
       renderCatalog();
     }
 
@@ -929,7 +932,7 @@
         storeData.settings.surface = surface;
         storeData.settings.text = text;
 
-        localStorage.setItem('js_settings_v10', JSON.stringify(storeData.settings));
+        localStorage.setItem('js_settings_v11', JSON.stringify(storeData.settings));
         applySettings();
         alert("¡Apariencia y logotipo actualizados exitosamente!");
       };
