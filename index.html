@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -27,24 +27,30 @@
     .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
     .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
     .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; }
-    .card-img-container { position: relative; width: 100%; height: 180px; background: #eee; }
+    
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
+    .card-img-container { position: relative; width: 100%; height: 210px; background: #eee; }
     .card-img { width: 100%; height: 100%; object-fit: cover; }
-    .badge-status { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+    
+    .badge-status { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 2; }
     .badge-available { background: #25d366; color: white; }
     .badge-soldout { background: #ff4d4d; color: white; }
+    
     .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
     .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
-    .card-price { font-size: 17px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
-    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 10px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 14px; margin-top: auto; display: block; border: none; }
+    .card-price { font-size: 18px; font-weight: 700; color: var(--primary); }
+    
+    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 15px; display: block; border: none; width: 100%; cursor: pointer; }
     .btn-ws.disabled { background: #ccc; pointer-events: none; }
     
-    /* Panel Admin Modal */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
-    .modal-content { background: var(--surface); width: 95%; max-width: 650px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 20px; position: relative; }
-    .close-btn { position: absolute; right: 20px; top: 20px; font-size: 24px; border: none; background: none; cursor: pointer; }
+    /* Modales */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
+    .modal-content { background: var(--surface); width: 100%; max-width: 550px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 25px; position: relative; }
+    .close-btn { position: absolute; right: 20px; top: 20px; font-size: 26px; border: none; background: none; cursor: pointer; color: var(--text-muted); z-index: 10; }
+    
     .admin-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 15px; }
     .tab-btn { padding: 8px 14px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; }
     .tab-btn.active { color: var(--primary); border-color: var(--primary); }
@@ -60,6 +66,14 @@
     .admin-actions { display: flex; gap: 5px; }
     .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
+    
+    /* Estilos Modal de Detalle de Producto */
+    .detail-img-box { position: relative; width: 100%; height: 280px; background: #eee; border-radius: 12px; overflow: hidden; margin-bottom: 15px; }
+    .detail-img { width: 100%; height: 100%; object-fit: cover; }
+    .detail-cat { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
+    .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
+    .detail-price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
+    .detail-desc-box { background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; border: 1px solid var(--border); }
   </style>
 </head>
 <body>
@@ -77,11 +91,28 @@
     <div class="products-grid" id="catalog-grid"></div>
   </div>
 
+  <!-- MODAL DETALLE DE PRODUCTO -->
+  <div class="modal" id="product-detail-modal">
+    <div class="modal-content">
+      <button class="close-btn" onclick="closeProductDetail()">&times;</button>
+      <div class="detail-img-box">
+        <div id="detail-badge"></div>
+        <img id="detail-img" class="detail-img" src="" alt="Producto">
+      </div>
+      <div id="detail-cat" class="detail-cat"></div>
+      <h2 id="detail-title" class="detail-title"></h2>
+      <div id="detail-price" class="detail-price"></div>
+      <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Descripción:</div>
+      <div id="detail-desc" class="detail-desc-box"></div>
+      <a id="detail-ws-btn" href="#" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+    </div>
+  </div>
+
   <!-- MODAL ADMIN -->
   <div class="modal" id="admin-modal">
     <div class="modal-content">
       <button class="close-btn" onclick="closeAdmin()">&times;</button>
-      <h2 id="modal-main-title">⚙️ Panel de Control</h2>
+      <h2>⚙️ Panel de Control</h2>
       
       <div class="admin-tabs">
         <button class="tab-btn active" onclick="switchTab('prod-tab')">📦 Productos</button>
@@ -113,7 +144,7 @@
             <input type="url" id="prod-img-url" placeholder="https://ejemplo.com/imagen.jpg">
           </div>
 
-          <div class="form-group"><label>Descripción</label><textarea id="prod-desc" rows="2"></textarea></div>
+          <div class="form-group"><label>Descripción</label><textarea id="prod-desc" rows="3" placeholder="Detalles del producto..."></textarea></div>
           <button type="submit" id="btn-save-prod" class="btn-submit">💾 Guardar Producto</button>
           <button type="button" id="btn-cancel-edit" class="btn-cancel" onclick="resetProductForm()">Cancelar Edición</button>
         </form>
@@ -140,7 +171,7 @@
         
         <!-- LOGO: AMBAS OPCIONES -->
         <div class="form-group">
-          <label>Subir Logo desde dispositivo</label>
+          <label>Logo de la Tienda (Subir archivo)</label>
           <input type="file" id="setting-logo-file" accept="image/*">
           <div class="or-divider">— O PEGA UN ENLACE WEB —</div>
           <input type="url" id="setting-logo-url" placeholder="https://ejemplo.com/logo.jpg">
@@ -156,9 +187,9 @@
   <script>
     let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash y Perfumes"];
     let defaultProducts = [
-      { id: 1, title: "Protector Solar Disaar SPF 90+", cat: "Cuidado Facial", price: "10.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible" },
-      { id: 2, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible" },
-      { id: 3, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible" }
+      { id: 1, title: "Protector Solar Disaar SPF 90+", cat: "Cuidado Facial", price: "10.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Protector solar de amplio espectro SPF 90+, ideal para el cuidado diario facial contra rayos UV." },
+      { id: 2, title: "Base Matte Deluxe Sheglam Pink", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Base de alta cobertura acabado mate, larga duración y textura ligera." },
+      { id: 3, title: "Rubor Líquido Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Rubor líquido de fácil difuminado con un toque natural y radiante." }
     ];
 
     let storeData = {
@@ -239,25 +270,22 @@
       filtered.forEach(p => {
         const card = document.createElement('div');
         card.className = "card";
-        const phone = storeData.settings.phone ? storeData.settings.phone : "";
-        const wsMsg = `https://wa.me/${phone}?text=${encodeURIComponent('Hola! Me interesa: ' + p.title + ' ($' + p.price + ')')}`;
+        card.onclick = () => openProductDetail(p.id);
+
         const isAgotado = p.status === "Agotado";
         const badgeHtml = isAgotado 
           ? `<span class="badge-status badge-soldout">Agotado</span>` 
           : `<span class="badge-status badge-available">Disponible</span>`;
-        const btnClass = isAgotado ? "btn-ws disabled" : "btn-ws";
-        const btnText = isAgotado ? "No disponible" : "Pedir por WhatsApp";
         
         card.innerHTML = `
           <div class="card-img-container">
             ${badgeHtml}
-            <img src="${p.img}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/200'">
+            <img src="${p.img}" class="card-img" alt="${p.title}" onerror="this.src='https://via.placeholder.com/300'">
           </div>
           <div class="card-content">
             <span class="card-cat">${p.cat}</span>
             <div class="card-title">${p.title}</div>
             <div class="card-price">$${p.price}</div>
-            <a href="${wsMsg}" class="${btnClass}" ${isAgotado ? 'tabindex="-1" aria-disabled="true"' : 'target="_blank"'}>${btnText}</a>
           </div>
         `;
         grid.appendChild(card);
@@ -277,6 +305,44 @@
           adminProdList.appendChild(item);
         });
       }
+    }
+
+    // Funciones del Modal de Detalle
+    function openProductDetail(id) {
+      const p = storeData.products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('detail-img').src = p.img;
+      document.getElementById('detail-cat').innerText = p.cat;
+      document.getElementById('detail-title').innerText = p.title;
+      document.getElementById('detail-price').innerText = '$' + p.price;
+      document.getElementById('detail-desc').innerText = p.desc || 'No hay descripción detallada para este producto.';
+
+      const badgeBox = document.getElementById('detail-badge');
+      const isAgotado = p.status === "Agotado";
+      badgeBox.innerHTML = isAgotado 
+        ? `<span class="badge-status badge-soldout" style="position:static; display:inline-block; margin-bottom:10px;">Agotado</span>` 
+        : `<span class="badge-status badge-available" style="position:static; display:inline-block; margin-bottom:10px;">Disponible</span>`;
+
+      const wsBtn = document.getElementById('detail-ws-btn');
+      const phone = storeData.settings.phone ? storeData.settings.phone : "";
+      const wsMsg = `https://wa.me/${phone}?text=${encodeURIComponent('Hola! Me interesa: ' + p.title + ' ($' + p.price + ')')}`;
+
+      if (isAgotado) {
+        wsBtn.className = "btn-ws disabled";
+        wsBtn.href = "#";
+        wsBtn.innerText = "Producto Agotado";
+      } else {
+        wsBtn.className = "btn-ws";
+        wsBtn.href = wsMsg;
+        wsBtn.innerText = "Pedir por WhatsApp";
+      }
+
+      document.getElementById('product-detail-modal').style.display = 'flex';
+    }
+
+    function closeProductDetail() {
+      document.getElementById('product-detail-modal').style.display = 'none';
     }
 
     function openAdmin() { document.getElementById('admin-modal').style.display = 'flex'; }
@@ -319,11 +385,10 @@
       const urlInput = document.getElementById('prod-img-url')?.value.trim();
 
       const existingProd = editingId ? storeData.products.find(p => p.id == editingId) : null;
-      let defaultImg = existingProd ? existingProd.img : "https://via.placeholder.com/200";
+      let defaultImg = existingProd ? existingProd.img : "https://via.placeholder.com/300";
 
       const finishSave = (finalImg) => {
         if (editingId) {
-          // Editar producto existente
           storeData.products = storeData.products.map(p => {
             if (p.id == editingId) {
               return { id: Number(editingId), title, cat, price, status, img: finalImg || p.img, desc };
@@ -332,7 +397,6 @@
           });
           alert("¡Producto actualizado exitosamente!");
         } else {
-          // Crear nuevo producto
           const newProd = {
             id: Date.now(),
             title,
@@ -375,11 +439,11 @@
       document.getElementById('prod-status').value = p.status || "Disponible";
       document.getElementById('prod-desc').value = p.desc || "";
       document.getElementById('prod-img-url').value = p.img.startsWith('data:') ? '' : p.img;
+      document.getElementById('prod-img-file').value = "";
 
       document.getElementById('btn-save-prod').innerText = "💾 Actualizar Producto";
       document.getElementById('btn-cancel-edit').style.display = "block";
       
-      // Ir a la pestaña de productos por si acaso
       switchTab('prod-tab');
     }
 
@@ -431,5 +495,4 @@
     init();
   </script>
 </body>
-</html>
 </html>
