@@ -17,11 +17,15 @@
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
     body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; transition: background-color 0.3s, color 0.3s; }
-    header { background: var(--surface); padding: 20px; text-align: center; border-bottom: 1px solid var(--border); position: relative; transition: background-color 0.3s; }
-    .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; object-fit: contain; }
-    .store-name { font-size: 26px; font-weight: 700; color: var(--primary); }
-    .store-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
-    .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; z-index: 10; }
+    
+    header { background: var(--surface); padding: 15px 25px; border-bottom: 1px solid var(--border); position: relative; display: flex; align-items: center; justify-content: space-between; transition: background-color 0.3s; }
+    .header-brand { display: flex; align-items: center; gap: 15px; }
+    .logo-img { height: 75px; width: 75px; border-radius: 10px; object-fit: cover; display: none; border: 1px solid var(--border); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    .store-info { display: flex; flex-direction: column; text-align: left; }
+    .store-name { font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1.2; }
+    .store-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    .admin-trigger { background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; z-index: 10; }
+
     .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
     .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); color: var(--text); }
     .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
@@ -46,7 +50,6 @@
     .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 15px; display: block; border: none; width: 100%; cursor: pointer; }
     .btn-ws.disabled { background: #ccc; pointer-events: none; }
     
-    /* PAGINACIÓN */
     .pagination-container { margin-top: 35px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
     .pagination-info-row { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 480px; font-size: 14px; color: var(--text-muted); padding: 0 4px; }
     .per-page-select { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; color: var(--text); outline: none; cursor: pointer; font-weight: 500; }
@@ -58,7 +61,6 @@
     .page-btn:disabled { color: #aaa; cursor: not-allowed; background: #e0e0e0; }
     .page-ellipsis { padding: 8px 12px; background: #e8e8e8; border-right: 1px solid #d0d0d0; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
 
-    /* MODALES */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
     .modal-content { background: var(--surface); color: var(--text); width: 100%; max-width: 580px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 25px; position: relative; border: 1px solid var(--border); }
     .close-btn { position: absolute; right: 20px; top: 20px; font-size: 26px; border: none; background: none; cursor: pointer; color: var(--text-muted); z-index: 10; }
@@ -96,10 +98,14 @@
 <body>
 
   <header>
+    <div class="header-brand">
+      <img id="store-logo" class="logo-img" src="" alt="Logo">
+      <div class="store-info">
+        <div id="display-title" class="store-name">Joliee Store</div>
+        <div id="display-sub" class="store-sub">Catálogo Oficial</div>
+      </div>
+    </div>
     <button class="admin-trigger" onclick="openAdmin()" title="Panel de Administración">⚙️</button>
-    <img id="store-logo" class="logo-img" src="" alt="Logo">
-    <div id="display-title" class="store-name">Joliee Store</div>
-    <div id="display-sub" class="store-sub">Catálogo Oficial</div>
   </header>
 
   <div class="container">
@@ -109,7 +115,7 @@
 
     <div class="pagination-container" id="pagination-section">
       <div class="pagination-info-row">
-        <span id="pagination-info-text">Mostrando 1–24 de 72</span>
+        <span id="pagination-info-text">Mostrando 1–24 de 132</span>
         <select class="per-page-select" id="per-page-select" onchange="changePerPage(this.value)">
           <option value="12">Mostrar 12</option>
           <option value="24" selected>Mostrar 24</option>
@@ -194,10 +200,10 @@
         <div class="form-group"><label>Subtítulo (Opcional)</label><input type="text" id="setting-sub" value="Catálogo Oficial"></div>
         
         <div class="form-group">
-          <label>Logo de la Tienda (Subir archivo)</label>
+          <label>Logo de la Tienda (Subir archivo o Enlace)</label>
           <input type="file" id="setting-logo-file" accept="image/*">
           <div class="or-divider">— O PEGA UN ENLACE WEB —</div>
-          <input type="url" id="setting-logo-url" placeholder="https://ejemplo.com/logo.jpg">
+          <input type="url" id="setting-logo-url" placeholder="https://i.ibb.co/689L53H/joliee-store-logo.png">
         </div>
 
         <div class="form-group"><label>Teléfono WhatsApp (Con código de país)</label><input type="text" id="setting-phone" placeholder="584120000000"></div>
@@ -247,11 +253,12 @@
       "Polvos y Rubores", 
       "Iluminadores y Contornos", 
       "Cabello", 
-      "Accesorios y Brochas"
+      "Accesorios y Brochas",
+      "Rimel y Delineadores"
     ];
 
     let defaultProducts = [
-      // 24 Productos Anteriores
+      // 72 Productos Anteriores
       { id: 101, title: "Crema Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "7.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Fórmula Iluminadora (Brightening Moist)." },
       { id: 102, title: "Sérum Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "5.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El toque concentrado de energía que toda piel necesita!" },
       { id: 103, title: "Espuma Limpiadora Facial SADOER", cat: "Splash, Cremas, Perfumes", price: "9.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El limpiador en mousse más práctico y completo!" },
@@ -276,72 +283,120 @@
       { id: 122, title: "Sérum Facial Grape Seed & Niacinamide", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción iluminadores." },
       { id: 123, title: "Sérum Facial Retinol & Vitamin E-Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción antiedad." },
       { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." },
-
-      // 48 Productos Nuevos Agregados
       { id: 201, title: "Jabón en Barra Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1608248597261-83324467915b?w=400", status: "Disponible", desc: "¡El toque rejuvenecedor ideal para la rutina diaria!" },
       { id: 202, title: "Paleta de Rubores Sheglam", cat: "Iluminadores y Contornos", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "La Paleta de Rubores Pink Sheglam combina tonos hermosos." },
       { id: 203, title: "Jabón Facial con Blanqueador VC SADOER", cat: "Cuidado Facial", price: "6.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Permite refrescar y limpiar los poros en profundidad." },
       { id: 204, title: "Tónico Ordinary Ácido Glicólico 7%", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Es una solución tónica con suaves propiedades exfoliantes." },
       { id: 205, title: "Crema Facial Vitamina C The Ordinary", cat: "Cuidado Facial", price: "8.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Es una potente suspensión de Vitamina C para el rostro." },
       { id: 206, title: "Sérum Ordinary Niacinamide 10% + Zinc 1%", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Un potente sérum con Vitamina B3 que combate imperfecciones." },
-
       { id: 207, title: "Protector Solar Mineral The Ordinary", cat: "Cuidado Facial", price: "5.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Este protector de The Ordinary ofrece una protección completa." },
       { id: 208, title: "Sérum Hyalu B5 Anti-age La Roche-Posay", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Es un sérum anti-arrugas que rellena, repara y restaura la piel." },
       { id: 209, title: "Perfume Escada Agua Del Sol Limited Edition", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Agua Del Sol de Escada (Edición Limitada) es una fragancia vibrante." },
       { id: 210, title: "Docena- Pinzas Flores Matte", cat: "Cabello", price: "24.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Se trata de las pinzas de «Flores Matte», broches ideales para el cabello." },
       { id: 211, title: "Brocha Individual para Polvo Suelto", cat: "Accesorios y Brochas", price: "3.50", img: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400", status: "Disponible", desc: "Elegante presentación con delicado diseño para polvos." },
       { id: 212, title: "Brochas Caracolitas de Mar x5", cat: "Accesorios y Brochas", price: "5.00", img: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400", status: "Disponible", desc: "Incluye herramientas para aplicar base, polvos y sombras." },
-
       { id: 213, title: "Bálsamos Labiales Dior Lip Butter (Pack)", cat: "Labiales", price: "20.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "¡El kit perfecto para lucir unos labios hidratados y brillantes!" },
       { id: 214, title: "Protector Térmico para el Cabello", cat: "Cabello", price: "11.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Protege contra el daño por calor de planchas y secadores." },
       { id: 215, title: "Crema de Manos Hidratante Moon", cat: "Splash, Cremas, Perfumes", price: "4.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Hermosa presentación de cremas para las manos muy suaves." },
       { id: 216, title: "Monederos Coach Tendencia", cat: "Accesorios y Brochas", price: "8.00", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400", status: "Disponible", desc: "Los monederos Parchita Mini son accesorios prácticos y en tendencia." },
       { id: 217, title: "Protector Solar Disaar SPF 70+ (80g)", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Esta crema protectora de Disaar no solo cuida la piel del sol sino que la nutre." },
       { id: 218, title: "Protector Solar Disaar SPF 90+ con Vitamina C", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El producto 2 en 1 perfecto para simplificar tu rutina diaria!" },
-
       { id: 219, title: "Protector Solar Disaar Gel Cream", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Esta versión en gel crema de Disaar combina alta protección UV." },
       { id: 220, title: "Delineador Líquido Girl Long-Lasting", cat: "Cejas y Pestañas", price: "2.50", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "¡El básico infaltable para lograr un delineado perfecto y duradero!" },
       { id: 221, title: "Lip Gloss Larga Duración Dolce Bella", cat: "Labiales", price: "5.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Labial gloss, hidrata los labios y le da un brillo espectacular." },
       { id: 222, title: "Brillo Gloss Premium Dolce Bella", cat: "Labiales", price: "8.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Hidrata los labios y le da un brillo hermoso e ideal para regalar." },
       { id: 223, title: "Rubor en Polvo MaxGlow", cat: "Polvos y Rubores", price: "6.50", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Formulado con una alta calidad, ofrece un rubor natural." },
       { id: 224, title: "Perfumes Jean Paul Gaultier Le Beau", cat: "Splash, Cremas, Perfumes", price: "25.00", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Descubre la línea Jean Paul Gaultier Le Beau, aroma sofisticado." },
-
       { id: 225, title: "Gel Hidratante de Vitamina C Sadoer", cat: "Cabello", price: "7.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El gel hidratante multiusos que no puede faltar!" },
       { id: 226, title: "Brochas Con Estuche Click", cat: "Accesorios y Brochas", price: "5.20", img: "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?w=400", status: "Disponible", desc: "Paquete de brochas/pinceles en estuche fino con broche." },
       { id: 227, title: "Rubor Dual Blush MaxGlow", cat: "Polvos y Rubores", price: "8.80", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Formulado con una alta calidad, ofrece un acabado radiante." },
       { id: 228, title: "Crema de Manos Hidratante Jazz", cat: "Splash, Cremas, Perfumes", price: "4.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Hermosa presentación de cremas para las manos." },
       { id: 229, title: "Parches Hidrogel para el Acné Star 4", cat: "Cuidado Facial", price: "4.80", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Estos parches para el acné están diseñados para cicatrizar granitos." },
       { id: 230, title: "Cepillo De Rizos MaxGlow", cat: "Cabello", price: "8.80", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Con una linda presentación y un mango ergonómico para definir rizos." },
-
       { id: 231, title: "Cepillo para Técnica Definidora de Rizos", cat: "Cabello", price: "7.20", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Multifuncional para desenredar, secar, peinar y definir rizos." },
       { id: 232, title: "Desmaquillante Full Face Sheglam", cat: "Cuidado Facial", price: "8.80", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Removedor de maquillaje, limpia y elimina todo tipo de maquillaje." },
       { id: 233, title: "Sérum Ordinary Retinol 0.2%", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Minimiza las líneas finas, mejora los problemas de textura." },
       { id: 234, title: "Protector Solar Con Base Disaar", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Protector solar SPF 50, protección instantánea con color." },
       { id: 235, title: "Sérum Anua Niacinamide Peach 70%", cat: "Cuidado Facial", price: "8.50", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "El suero facial Anua Peach 70% Niacinamide aporta luminosidad." },
       { id: 236, title: "Sérum Hidratante Anua 80% Pieles Sensibles", cat: "Cuidado Facial", price: "8.50", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Sérum facial coreano diseñado para calmar e hidratar la piel." },
-
       { id: 237, title: "Sérum Ordinary Cafeína 5% + EGCG", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Un Sérum exclusivo para los ojos, de textura liviana que reduce ojeras." },
       { id: 238, title: "Delineador Líquido Dolce Bella (Surtidos)", cat: "Cuidado Facial", price: "8.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "La herramienta ideal de precisión y larga duración." },
       { id: 239, title: "Laminador de Cejas Vit. C + Cepillito", cat: "Cejas y Pestañas", price: "5.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Realiza cejas perfectas con este excelente fijador orgánico." },
       { id: 240, title: "Labial Matte Velvet Karité", cat: "Labiales", price: "3.20", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "¡Dale a tus labios un toque sofisticado con este labial aterciopelado!" },
       { id: 241, title: "Glow Reviver Melting Lip e.l.f", cat: "Labiales", price: "6.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Brillo labial con acabado jugoso y luminoso, ultraglossy." },
       { id: 242, title: "Rubor Líquido Camo e.l.f", cat: "Polvos y Rubores", price: "6.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Rubor líquido de alta pigmentación, textura suave y fácil difuminado." },
-
       { id: 243, title: "Polvo Suelto Matte Fusion e.l.f", cat: "Polvos y Rubores", price: "6.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Polvo suelto de textura fina, ideal para sellar el maquillaje sin peso." },
       { id: 244, title: "Polvo Suelto Halo Glow e.l.f", cat: "Polvos y Rubores", price: "6.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Polvo suelto de textura fina, ideal para sellar con un acabado luminoso." },
       { id: 245, title: "Power Grip Primer e.l.f", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Primer de textura ligera diseñado para preparar la piel y fijar el maquillaje." },
       { id: 246, title: "Power Grip Primer + 4% Niacinamida e.l.f", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Primer facial de textura tipo gel con 4% de niacinamida para perfeccionar." },
       { id: 247, title: "Base Halo Glow Liquid Filter e.l.f", cat: "Bases y Correctores", price: "8.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Fórmula líquida de textura ligera que aporta un filtro de luz radiante." },
-      { id: 248, title: "Lip Oil Glow Reviver e.l.f", cat: "Labiales", price: "6.50", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Brillo labial nutritivo en aceite con acabado jugoso y muy cómodo." }
+      { id: 248, title: "Lip Oil Glow Reviver e.l.f", cat: "Labiales", price: "6.50", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Brillo labial nutritivo en aceite con acabado jugoso y muy cómodo." },
+
+      // 60 Productos Nuevos Añadidos (de las últimas 10 imágenes)
+      { id: 301, title: "Gloss con Color Tendencia Rhode", cat: "Labiales", price: "12.50", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "Se funden en los labios para un acabado rico y jugoso." },
+      { id: 302, title: "Lápiz Contorno de Labios Retráctil Rhode", cat: "Labiales", price: "5.50", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", desc: "El Peptide Lip Shape de Rhode es un delineador suave y preciso." },
+      { id: 303, title: "Rimel Profesional White Salomé", cat: "Rimel y Delineadores", price: "8.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Una máscara con cepillo de cerdas sintéticas que eleva las pestañas." },
+      { id: 304, title: "Corrector Profesional Salomé", cat: "Bases y Correctores", price: "8.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Ideal para cubrir manchas, pecas, puntos negros y ojeras." },
+      { id: 305, title: "Perfume Very Good Girl Carolina Herrera", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Un aroma irresistible que se vende por sí solo." },
+      { id: 306, title: "Rubor en Barra Rhode Tendencia", cat: "Polvos y Rubores", price: "6.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Rubor en barra que brinda un acabado natural a la piel." },
+
+      { id: 307, title: "Base Profesional Salomé Anti-Age", cat: "Bases y Correctores", price: "8.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Con un acabado matte, perfecta para pieles maduras o mixtas." },
+      { id: 308, title: "Carteras Bag Doble Cierre Trendy", cat: "Accesorios y Brochas", price: "13.00", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400", status: "Disponible", desc: "Este accesorio pequeño en tamaño pero grande en estilo." },
+      { id: 309, title: "Maxi Carteras Modern Fashion", cat: "Accesorios y Brochas", price: "16.00", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400", status: "Disponible", desc: "Luce elegancia, espacio y practicidad con nuestra maxi cartera." },
+      { id: 310, title: "Lápiz Delineador de Ojos Sheglam (Pack)", cat: "Labiales", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Con colores intensos y duraderos, estos lápices delinean sin correrse." },
+      { id: 311, title: "Rimel Profesional Sheglam Big Eyelashes", cat: "Rimel y Delineadores", price: "5.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "El Rímel Profesional SHEGLAM Big Eyelashes da volumen extremo." },
+      { id: 312, title: "Rimel Profesional Mascara Sheglam Silver", cat: "Rimel y Delineadores", price: "5.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "El Rímel Profesional SHEGLAM Silver está diseñado para rizar." },
+
+      { id: 313, title: "Rimel Transparente Sheglam", cat: "Rimel y Delineadores", price: "4.20", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Ten unas pestañas radiantes y con definición natural." },
+      { id: 314, title: "Base Matte Salomé Full Coverage Oil-Control", cat: "Bases y Correctores", price: "13.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Base de uso profesional, logra un acabado matte de larga duración." },
+      { id: 315, title: "Base Matte Light Salomé con Ácido Hialurónico", cat: "Bases y Correctores", price: "13.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Base ligera que hidrata mientras controla el brillo." },
+      { id: 316, title: "Pulsera Corazón Cute (615)", cat: "Accesorios y Brochas", price: "4.00", img: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=400", status: "Disponible", desc: "Las Pulseras Corazón son el accesorio perfecto para regalar." },
+      { id: 317, title: "Polvo Suelto Profesional Salomé", cat: "Polvos y Rubores", price: "10.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Polvo suelto fácil de usar, perfectamente curado para sellar." },
+      { id: 318, title: "Carteras Clásicas Maxi-Bag Vintage", cat: "Accesorios y Brochas", price: "16.00", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400", status: "Disponible", desc: "Inspiradas en la moda clásica pero con un toque moderno." },
+
+      { id: 319, title: "Rimel Volumen y Definición Dolce Bella", cat: "Rimel y Delineadores", price: "8.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Crea una mayor definición de todas las pestañas, sin grumos." },
+      { id: 320, title: "Corrector Líquido Premium Dolce Bella", cat: "Bases y Correctores", price: "8.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Corrector de ojeras líquido con fórmula de alta cobertura." },
+      { id: 321, title: "Sérum Neovadiol Vichy", cat: "Cuidado Facial", price: "6.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Minimiza las líneas finas, mejora los problemas de densidad." },
+      { id: 322, title: "Primer Hidratante Profesional Dolce Bella", cat: "Bases y Correctores", price: "12.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Prepara y acondiciona la piel. Cierra los poros y fija el maquillaje." },
+      { id: 323, title: "Sérum Facial Anua Birch 70% Control de Sebo", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "El sérum hidratante Birch 70% de ANUA es un tónico equilibrante." },
+      { id: 324, title: "Base Sheglam 24H Premium", cat: "Bases y Correctores", price: "8.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Su textura aterciopelada se desliza suavemente, alta cobertura." },
+
+      { id: 325, title: "Microblading Waterproof Rosado", cat: "Cejas y Pestañas", price: "3.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "¡El infaltable para definir, rellenar y enmarcar la mirada!" },
+      { id: 326, title: "Corrector Líquido De Alta Cobertura Sheglam", cat: "Bases y Correctores", price: "4.50", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Combina el cuidado de la piel con el maquillaje. Se funde perfecto." },
+      { id: 327, title: "Joyero Organizador Premium", cat: "Accesorios y Brochas", price: "6.50", img: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400", status: "Disponible", desc: "Hermoso estuche de joyería de viaje, ideal para llevar accesorios." },
+      { id: 328, title: "Perfume Unisex Game of Spades Moon", cat: "Splash, Cremas, Perfumes", price: "35.00", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Game of Spades Moon es una fragancia que cautiva los sentidos." },
+      { id: 329, title: "Perfume Le Labo Santal 33", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Santal 33 es una de las fragancias nicho más deseadas." },
+      { id: 330, title: "Perfume Moschino Toy 2 Bubble Gum", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Toy 2 Bubble Gum de Moschino es una fragancia divertida y dulce." },
+
+      { id: 331, title: "Perfume Lattafa Pride Art of Universe", cat: "Splash, Cremas, Perfumes", price: "31.00", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "En formato Eau de Parfum de 100 ml, es una joya aromática." },
+      { id: 332, title: "Perfumes Jean Paul Gaultier Collection", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Fragancias de diseñador con identidad propia y gran fijación." },
+      { id: 333, title: "Perfume Valentino Donna Born In Roma", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia femenina elegante y moderna que deja huella." },
+      { id: 334, title: "Perfume Starwalker by Montblanc", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia fresca, elegante y masculina para el día a día." },
+      { id: 335, title: "Perfume Ombre Nomade by Louis Vuitton", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia intensa, sofisticada y de notas amaderadas profundas." },
+      { id: 336, title: "Perfume Good Girl Carolina Herrera", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia sofisticada que combina la dulzura del jazmín." },
+
+      { id: 337, title: "Perfume 360° for Men by Perry Ellis", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia fresca, elegante y atemporal que destaca." },
+      { id: 338, title: "Perfume 360° Red for Men by Perry Ellis", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia moderna, fresca y sofisticada con especias cálidas." },
+      { id: 339, title: "Perfume Midnight Fantasy by Britney Spears", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Una fragancia intensa, dulce y misteriosa que enamora." },
+      { id: 340, title: "Perfume Moschino Toy Boy", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Toy Boy es una fragancia masculina moderna que reinterpreta la elegancia." },
+      { id: 341, title: "Perfumes Ariana Grande Collection", cat: "Splash, Cremas, Perfumes", price: "24.50", img: "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400", status: "Disponible", desc: "Descubre la colección de fragancias más icónica y dulce de la artista." },
+      { id: 342, title: "Rubor Líquido Con Brocha Viral Sheglam", cat: "Polvos y Rubores", price: "6.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Fórmula de larga duración: Color vibrante y textura ligera." },
+
+      { id: 343, title: "Primer Hidratante Sheglam Purple", cat: "Cuidado Facial", price: "4.20", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "El Primer Minimizador de Poros SHEGLAM es la base perfecta." },
+      { id: 344, title: "Compacto Doble Sheglam Pink Moment", cat: "Polvos y Rubores", price: "6.50", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "El Polvo Compacto SHEGLAM Pink Moment sella y matifica." },
+      { id: 345, title: "Base Profesional Hidratante Glowy Sheglam", cat: "Bases y Correctores", price: "8.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "La Base Profesional Hidratante Glowy de Sheglam aporta luminosidad." },
+      { id: 346, title: "Base Hidratante Sheglam Deluxe", cat: "Bases y Correctores", price: "9.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", desc: "Su textura aterciopelada se desliza suavemente, hidratando la piel." },
+      { id: 347, title: "Polvo Suelto Control De Grasa ALL-DAY Sheglam", cat: "Polvos y Rubores", price: "5.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "El Polvo Suelto 24H Control de Grasa sella el maquillaje por horas." },
+      { id: 348, title: "Rimel Big Time Eyes Sheglam", cat: "Rimel y Delineadores", price: "5.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", desc: "Tendrás pestañas radiantes y con definición de alto impacto." }
     ];
 
     let storeData = {
-      categories: JSON.parse(localStorage.getItem('js_cats_v5')) || defaultCategories,
-      products: JSON.parse(localStorage.getItem('js_prods_v5')) || defaultProducts,
-      settings: JSON.parse(localStorage.getItem('js_settings_v5')) || {
+      categories: JSON.parse(localStorage.getItem('js_cats_v7')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods_v7')) || defaultProducts,
+      settings: JSON.parse(localStorage.getItem('js_settings_v7')) || {
         title: "Joliee Store",
         sub: "Catálogo Oficial",
-        logo: "",
+        logo: "https://i.ibb.co/689L53H/joliee-store-logo.png",
         phone: "",
         primary: "#800020",
         bg: "#f8f6f6",
@@ -354,10 +409,10 @@
       itemsPerPage: 24
     };
 
-    if (!localStorage.getItem('js_prods_v5')) {
-      localStorage.setItem('js_prods_v5', JSON.stringify(defaultProducts));
-      localStorage.setItem('js_cats_v5', JSON.stringify(defaultCategories));
-      localStorage.setItem('js_settings_v5', JSON.stringify(storeData.settings));
+    if (!localStorage.getItem('js_prods_v7')) {
+      localStorage.setItem('js_prods_v7', JSON.stringify(defaultProducts));
+      localStorage.setItem('js_cats_v7', JSON.stringify(defaultCategories));
+      localStorage.setItem('js_settings_v7', JSON.stringify(storeData.settings));
     }
 
     function init() {
@@ -373,8 +428,9 @@
       document.getElementById('page-title').innerText = s.title || "Joliee Store";
       
       const logoEl = document.getElementById('store-logo');
-      if (s.logo) {
-        logoEl.src = s.logo;
+      const logoUrl = s.logo || "https://i.ibb.co/689L53H/joliee-store-logo.png";
+      if (logoUrl) {
+        logoEl.src = logoUrl;
         logoEl.style.display = "block";
       } else {
         logoEl.style.display = "none";
@@ -621,7 +677,7 @@
       const val = input.value.trim();
       if (val && !storeData.categories.includes(val)) {
         storeData.categories.push(val);
-        localStorage.setItem('js_cats_v5', JSON.stringify(storeData.categories));
+        localStorage.setItem('js_cats_v7', JSON.stringify(storeData.categories));
         input.value = "";
         renderCategories();
       }
@@ -629,7 +685,7 @@
 
     function deleteCategory(cat) {
       storeData.categories = storeData.categories.filter(c => c !== cat);
-      localStorage.setItem('js_cats_v5', JSON.stringify(storeData.categories));
+      localStorage.setItem('js_cats_v7', JSON.stringify(storeData.categories));
       renderCategories();
     }
 
@@ -670,7 +726,7 @@
           alert("¡Producto guardado exitosamente!");
         }
 
-        localStorage.setItem('js_prods_v5', JSON.stringify(storeData.products));
+        localStorage.setItem('js_prods_v7', JSON.stringify(storeData.products));
         renderCatalog();
         resetProductForm();
       };
@@ -716,7 +772,7 @@
 
     function deleteProduct(id) {
       storeData.products = storeData.products.filter(p => p.id !== id);
-      localStorage.setItem('js_prods_v5', JSON.stringify(storeData.products));
+      localStorage.setItem('js_prods_v7', JSON.stringify(storeData.products));
       renderCatalog();
     }
 
@@ -735,16 +791,16 @@
       const updateData = (logoSrc) => {
         storeData.settings.title = title;
         storeData.settings.sub = sub;
-        if (logoSrc !== undefined) storeData.settings.logo = logoSrc;
+        if (logoSrc !== undefined && logoSrc !== "") storeData.settings.logo = logoSrc;
         storeData.settings.phone = phone;
         storeData.settings.primary = primary;
         storeData.settings.bg = bg;
         storeData.settings.surface = surface;
         storeData.settings.text = text;
 
-        localStorage.setItem('js_settings_v5', JSON.stringify(storeData.settings));
+        localStorage.setItem('js_settings_v7', JSON.stringify(storeData.settings));
         applySettings();
-        alert("¡Apariencia y colores actualizados!");
+        alert("¡Apariencia y logotipo actualizados exitosamente!");
       };
 
       if (fileInput && fileInput.files && fileInput.files[0]) {
@@ -763,4 +819,4 @@
     init();
   </script>
 </body>
-</html>
+</html> 
