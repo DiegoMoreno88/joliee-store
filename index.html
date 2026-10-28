@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -67,9 +67,9 @@
     .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     
-    /* Estilos Modal de Detalle de Producto */
-    .detail-img-box { position: relative; width: 100%; height: 280px; background: #eee; border-radius: 12px; overflow: hidden; margin-bottom: 15px; }
-    .detail-img { width: 100%; height: 100%; object-fit: cover; }
+    /* Estilos Modal de Detalle de Producto - Imagen Completa (Contain) */
+    .detail-img-box { position: relative; width: 100%; height: 300px; background: #f0f0f0; border-radius: 12px; overflow: hidden; margin-bottom: 15px; display: flex; align-items: center; justify-content: center; }
+    .detail-img { width: 100%; height: 100%; object-fit: contain; }
     .detail-cat { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
     .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
     .detail-price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
@@ -96,7 +96,7 @@
     <div class="modal-content">
       <button class="close-btn" onclick="closeProductDetail()">&times;</button>
       <div class="detail-img-box">
-        <div id="detail-badge"></div>
+        <div id="detail-badge" style="position:absolute; top:10px; left:10px; z-index:5;"></div>
         <img id="detail-img" class="detail-img" src="" alt="Producto">
       </div>
       <div id="detail-cat" class="detail-cat"></div>
@@ -321,8 +321,8 @@
       const badgeBox = document.getElementById('detail-badge');
       const isAgotado = p.status === "Agotado";
       badgeBox.innerHTML = isAgotado 
-        ? `<span class="badge-status badge-soldout" style="position:static; display:inline-block; margin-bottom:10px;">Agotado</span>` 
-        : `<span class="badge-status badge-available" style="position:static; display:inline-block; margin-bottom:10px;">Disponible</span>`;
+        ? `<span class="badge-status badge-soldout" style="position:static; display:inline-block;">Agotado</span>` 
+        : `<span class="badge-status badge-available" style="position:static; display:inline-block;">Disponible</span>`;
 
       const wsBtn = document.getElementById('detail-ws-btn');
       const phone = storeData.settings.phone ? storeData.settings.phone : "";
