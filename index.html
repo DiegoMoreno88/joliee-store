@@ -16,20 +16,20 @@
       --border: #e8e3e3;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
-    header { background: var(--surface); padding: 20px; text-align: center; border-bottom: 1px solid var(--border); position: relative; }
+    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; transition: background-color 0.3s, color 0.3s; }
+    header { background: var(--surface); padding: 20px; text-align: center; border-bottom: 1px solid var(--border); position: relative; transition: background-color 0.3s; }
     .logo-img { max-height: 80px; margin-bottom: 10px; border-radius: 8px; display: none; margin-left: auto; margin-right: auto; object-fit: contain; }
     .store-name { font-size: 26px; font-weight: 700; color: var(--primary); }
     .store-sub { font-size: 14px; color: var(--text-muted); margin-top: 4px; }
     .admin-trigger { position: absolute; right: 15px; top: 15px; background: none; border: none; font-size: 24px; cursor: pointer; padding: 5px; z-index: 10; }
     .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
-    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); }
+    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); color: var(--text); }
     .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-    .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; }
+    .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; color: var(--text); }
     .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
     
     .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s; }
     .card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
     .card-img-container { position: relative; width: 100%; height: 210px; background: #eee; }
     .card-img { width: 100%; height: 100%; object-fit: cover; }
@@ -40,29 +40,41 @@
     
     .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
     .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; }
+    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; color: var(--text); }
     .card-price { font-size: 18px; font-weight: 700; color: var(--primary); }
     
     .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 15px; display: block; border: none; width: 100%; cursor: pointer; }
     .btn-ws.disabled { background: #ccc; pointer-events: none; }
     
-    /* Modales */
+    /* ESTILOS DE PAGINACIÓN IDÉNTICOS A LA IMAGEN */
+    .pagination-container { margin-top: 35px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+    .pagination-info-row { display: flex; align-items: center; justify-content: space-between; width: 100%; max-width: 480px; font-size: 14px; color: var(--text-muted); padding: 0 4px; }
+    .per-page-select { padding: 6px 12px; border-radius: 8px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; color: var(--text); outline: none; cursor: pointer; font-weight: 500; }
+    .pagination-bar { display: inline-flex; background: #e8e8e8; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
+    .page-btn { padding: 8px 16px; border: none; background: #e8e8e8; border-right: 1px solid #d0d0d0; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; transition: background 0.2s, color 0.2s; display: flex; align-items: center; justify-content: center; min-width: 42px; min-height: 38px; }
+    .page-btn:last-child { border-right: none; }
+    .page-btn:hover:not(.active):not(:disabled) { background: #dcdcdc; }
+    .page-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .page-btn:disabled { color: #aaa; cursor: not-allowed; background: #e0e0e0; }
+    .page-ellipsis { padding: 8px 12px; background: #e8e8e8; border-right: 1px solid #d0d0d0; font-size: 14px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
+
+    /* MODALES */
     .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
-    .modal-content { background: var(--surface); width: 100%; max-width: 550px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 25px; position: relative; }
+    .modal-content { background: var(--surface); color: var(--text); width: 100%; max-width: 580px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 25px; position: relative; border: 1px solid var(--border); }
     .close-btn { position: absolute; right: 20px; top: 20px; font-size: 26px; border: none; background: none; cursor: pointer; color: var(--text-muted); z-index: 10; }
     
-    .admin-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 15px; }
-    .tab-btn { padding: 8px 14px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; }
+    .admin-tabs { display: flex; gap: 10px; border-bottom: 1px solid var(--border); margin-bottom: 15px; margin-top: 15px; overflow-x: auto; }
+    .tab-btn { padding: 8px 14px; border: none; background: none; cursor: pointer; font-weight: 600; color: var(--text-muted); border-bottom: 2px solid transparent; white-space: nowrap; }
     .tab-btn.active { color: var(--primary); border-color: var(--primary); }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
     .form-group { margin-bottom: 12px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; background: var(--bg); color: var(--text); }
     .or-divider { text-align: center; font-size: 11px; color: var(--text-muted); margin: 4px 0; font-weight: 600; }
     .btn-submit { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 10px; }
     .btn-cancel { background: #666; color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; margin-top: 5px; display: none; }
-    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; gap: 10px; }
+    .admin-item { display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid var(--border); font-size: 14px; gap: 10px; color: var(--text); }
     .admin-actions { display: flex; gap: 5px; }
     .btn-edit { background: #007bff; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
     .btn-del { background: #ff4d4d; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
@@ -73,7 +85,14 @@
     .detail-cat { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
     .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
     .detail-price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
-    .detail-desc-box { background: #f9f9f9; padding: 12px; border-radius: 8px; font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; border: 1px solid var(--border); }
+    .detail-desc-box { background: var(--bg); padding: 12px; border-radius: 8px; font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; border: 1px solid var(--border); }
+    
+    /* PRESETS DE COLOR EN APARIENCIA */
+    .preset-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 15px; }
+    .btn-preset { padding: 8px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer; background: var(--bg); color: var(--text); text-align: center; }
+    .color-pickers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 12px; }
+    .color-picker-item { display: flex; flex-direction: column; gap: 4px; }
+    .color-picker-item input[type="color"] { width: 100%; height: 36px; border: none; border-radius: 6px; cursor: pointer; background: transparent; }
   </style>
 </head>
 <body>
@@ -86,9 +105,23 @@
   </header>
 
   <div class="container">
-    <input type="text" id="search-input" class="search-box" placeholder="Buscar por producto..." oninput="renderCatalog()">
+    <input type="text" id="search-input" class="search-box" placeholder="Buscar por producto..." oninput="onSearchOrCatChange()">
     <div class="categories-bar" id="cat-chips"></div>
     <div class="products-grid" id="catalog-grid"></div>
+
+    <!-- CONTADOR Y PAGINACIÓN -->
+    <div class="pagination-container" id="pagination-section">
+      <div class="pagination-info-row">
+        <span id="pagination-info-text">Mostrando 1–24 de 24</span>
+        <select class="per-page-select" id="per-page-select" onchange="changePerPage(this.value)">
+          <option value="12">Mostrar 12</option>
+          <option value="24" selected>Mostrar 24</option>
+          <option value="48">Mostrar 48</option>
+          <option value="all">Mostrar Todos</option>
+        </select>
+      </div>
+      <div class="pagination-bar" id="pagination-controls"></div>
+    </div>
   </div>
 
   <!-- MODAL DETALLE DE PRODUCTO -->
@@ -178,6 +211,35 @@
         </div>
 
         <div class="form-group"><label>Teléfono WhatsApp (Con código de país)</label><input type="text" id="setting-phone" placeholder="584120000000"></div>
+
+        <h3 style="margin-top:20px; margin-bottom:8px;">🎨 Personalizador de Colores</h3>
+        <label style="font-size:12px; font-weight:600; color:var(--text-muted); display:block; margin-bottom:6px;">Temas Rápidos de Temporada:</label>
+        <div class="preset-grid">
+          <button type="button" class="btn-preset" onclick="applyColorPreset('#800020', '#f8f6f6', '#ffffff', '#2b2b2b', '#666666')">🍷 Clásico Joliee</button>
+          <button type="button" class="btn-preset" onclick="applyColorPreset('#b30000', '#f4fbf4', '#ffffff', '#1b4d1b', '#4a7c4a')">🎄 Navidad</button>
+          <button type="button" class="btn-preset" onclick="applyColorPreset('#e65100', '#181818', '#242424', '#ffffff', '#b0b0b0')">🎃 Halloween</button>
+          <button type="button" class="btn-preset" onclick="applyColorPreset('#d81b60', '#fcf4f8', '#ffffff', '#3e2723', '#8d6e63')">🌸 Primavera</button>
+        </div>
+
+        <div class="color-pickers-grid">
+          <div class="color-picker-item">
+            <label>Color Principal</label>
+            <input type="color" id="theme-primary" value="#800020">
+          </div>
+          <div class="color-picker-item">
+            <label>Fondo Página</label>
+            <input type="color" id="theme-bg" value="#f8f6f6">
+          </div>
+          <div class="color-picker-item">
+            <label>Fondo Tarjetas</label>
+            <input type="color" id="theme-surface" value="#ffffff">
+          </div>
+          <div class="color-picker-item">
+            <label>Texto Principal</label>
+            <input type="color" id="theme-text" value="#2b2b2b">
+          </div>
+        </div>
+
         <button onclick="saveSettings()" class="btn-submit">💾 Guardar Cambios</button>
       </div>
 
@@ -216,18 +278,29 @@
       { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." }
     ];
 
-    // USAMOS LLAVES NUEVAS (_v3) PARA FORZAR LA CARGA DE LOS 24 PRODUCTOS
     let storeData = {
-      categories: JSON.parse(localStorage.getItem('js_cats_v3')) || defaultCategories,
-      products: JSON.parse(localStorage.getItem('js_prods_v3')) || defaultProducts,
-      settings: JSON.parse(localStorage.getItem('js_settings')) || { title: "Joliee Store", sub: "Catálogo Oficial", logo: "", phone: "" },
-      activeCat: "Todos"
+      categories: JSON.parse(localStorage.getItem('js_cats_v4')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods_v4')) || defaultProducts,
+      settings: JSON.parse(localStorage.getItem('js_settings_v4')) || {
+        title: "Joliee Store",
+        sub: "Catálogo Oficial",
+        logo: "",
+        phone: "",
+        primary: "#800020",
+        bg: "#f8f6f6",
+        surface: "#ffffff",
+        text: "#2b2b2b",
+        textMuted: "#666666"
+      },
+      activeCat: "Todos",
+      currentPage: 1,
+      itemsPerPage: 24
     };
 
-    // Aseguramos que se guarden por primera vez en esta versión
-    if (!localStorage.getItem('js_prods_v3')) {
-      localStorage.setItem('js_prods_v3', JSON.stringify(defaultProducts));
-      localStorage.setItem('js_cats_v3', JSON.stringify(defaultCategories));
+    if (!localStorage.getItem('js_prods_v4')) {
+      localStorage.setItem('js_prods_v4', JSON.stringify(defaultProducts));
+      localStorage.setItem('js_cats_v4', JSON.stringify(defaultCategories));
+      localStorage.setItem('js_settings_v4', JSON.stringify(storeData.settings));
     }
 
     function init() {
@@ -237,16 +310,38 @@
     }
 
     function applySettings() {
-      document.getElementById('display-title').innerText = storeData.settings.title || "Joliee Store";
-      document.getElementById('display-sub').innerText = storeData.settings.sub || "";
-      document.getElementById('page-title').innerText = storeData.settings.title || "Joliee Store";
+      const s = storeData.settings;
+      document.getElementById('display-title').innerText = s.title || "Joliee Store";
+      document.getElementById('display-sub').innerText = s.sub || "";
+      document.getElementById('page-title').innerText = s.title || "Joliee Store";
+      
       const logoEl = document.getElementById('store-logo');
-      if (storeData.settings.logo) {
-        logoEl.src = storeData.settings.logo;
+      if (s.logo) {
+        logoEl.src = s.logo;
         logoEl.style.display = "block";
       } else {
         logoEl.style.display = "none";
       }
+
+      // Aplicar colores dinámicos al CSS
+      document.documentElement.style.setProperty('--primary', s.primary || '#800020');
+      document.documentElement.style.setProperty('--bg', s.bg || '#f8f6f6');
+      document.documentElement.style.setProperty('--surface', s.surface || '#ffffff');
+      document.documentElement.style.setProperty('--text', s.text || '#2b2b2b');
+      document.documentElement.style.setProperty('--text-muted', s.textMuted || '#666666');
+
+      // Actualizar pickers en panel
+      if (document.getElementById('theme-primary')) document.getElementById('theme-primary').value = s.primary || '#800020';
+      if (document.getElementById('theme-bg')) document.getElementById('theme-bg').value = s.bg || '#f8f6f6';
+      if (document.getElementById('theme-surface')) document.getElementById('theme-surface').value = s.surface || '#ffffff';
+      if (document.getElementById('theme-text')) document.getElementById('theme-text').value = s.text || '#2b2b2b';
+    }
+
+    function applyColorPreset(primary, bg, surface, text, textMuted) {
+      document.getElementById('theme-primary').value = primary;
+      document.getElementById('theme-bg').value = bg;
+      document.getElementById('theme-surface').value = surface;
+      document.getElementById('theme-text').value = text;
     }
 
     function renderCategories() {
@@ -264,7 +359,7 @@
         const chip = document.createElement('button');
         chip.className = `cat-chip ${storeData.activeCat === cat ? 'active' : ''}`;
         chip.innerText = cat;
-        chip.onclick = () => { storeData.activeCat = cat; renderCategories(); renderCatalog(); };
+        chip.onclick = () => { storeData.activeCat = cat; storeData.currentPage = 1; renderCategories(); renderCatalog(); };
         bar.appendChild(chip);
 
         if (cat !== "Todos") {
@@ -280,6 +375,17 @@
           }
         }
       });
+    }
+
+    function onSearchOrCatChange() {
+      storeData.currentPage = 1;
+      renderCatalog();
+    }
+
+    function changePerPage(val) {
+      storeData.itemsPerPage = val === 'all' ? 999999 : parseInt(val);
+      storeData.currentPage = 1;
+      renderCatalog();
     }
 
     function renderCatalog() {
@@ -298,7 +404,16 @@
         return matchCat && matchSearch;
       });
 
-      filtered.forEach(p => {
+      const totalItems = filtered.length;
+      const itemsPerPage = storeData.itemsPerPage;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+      if (storeData.currentPage > totalPages) storeData.currentPage = totalPages;
+      const startIndex = (storeData.currentPage - 1) * itemsPerPage;
+      const endIndex = Math.min(startIndex + itemsPerPage, totalItems);
+      const paginatedItems = filtered.slice(startIndex, endIndex);
+
+      paginatedItems.forEach(p => {
         const card = document.createElement('div');
         card.className = "card";
         card.onclick = () => openProductDetail(p.id);
@@ -322,6 +437,8 @@
         grid.appendChild(card);
       });
 
+      renderPaginationControls(totalItems, startIndex, endIndex, totalPages);
+
       if (adminProdList) {
         storeData.products.forEach(p => {
           const item = document.createElement('div');
@@ -338,7 +455,65 @@
       }
     }
 
-    // Funciones del Modal de Detalle
+    function renderPaginationControls(totalItems, startIndex, endIndex, totalPages) {
+      const infoText = document.getElementById('pagination-info-text');
+      const controlsBox = document.getElementById('pagination-controls');
+
+      if (totalItems === 0) {
+        infoText.innerText = "Mostrando 0 de 0 productos";
+        controlsBox.innerHTML = "";
+        return;
+      }
+
+      infoText.innerText = `Mostrando ${startIndex + 1}–${endIndex} de ${totalItems}`;
+
+      if (totalPages <= 1) {
+        controlsBox.innerHTML = `
+          <button class="page-btn" disabled>&lt;</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn" disabled>&gt;</button>
+        `;
+        return;
+      }
+
+      let html = `<button class="page-btn" ${storeData.currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${storeData.currentPage - 1})">&lt;</button>`;
+
+      const curr = storeData.currentPage;
+      let pages = [];
+
+      if (totalPages <= 7) {
+        for (let i = 1; i <= totalPages; i++) pages.push(i);
+      } else {
+        pages.push(1);
+        if (curr > 3) pages.push('...');
+        
+        let start = Math.max(2, curr - 1);
+        let end = Math.min(totalPages - 1, curr + 1);
+        for (let i = start; i <= end; i++) pages.push(i);
+        
+        if (curr < totalPages - 2) pages.push('...');
+        pages.push(totalPages);
+      }
+
+      pages.forEach(p => {
+        if (p === '...') {
+          html += `<span class="page-ellipsis">...</span>`;
+        } else {
+          html += `<button class="page-btn ${p === curr ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`;
+        }
+      });
+
+      html += `<button class="page-btn" ${storeData.currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${storeData.currentPage + 1})">&gt;</button>`;
+      controlsBox.innerHTML = html;
+    }
+
+    function goToPage(p) {
+      storeData.currentPage = p;
+      renderCatalog();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Modal de Detalle
     function openProductDetail(id) {
       const p = storeData.products.find(item => item.id === id);
       if (!p) return;
@@ -392,7 +567,7 @@
       const val = input.value.trim();
       if (val && !storeData.categories.includes(val)) {
         storeData.categories.push(val);
-        localStorage.setItem('js_cats_v3', JSON.stringify(storeData.categories));
+        localStorage.setItem('js_cats_v4', JSON.stringify(storeData.categories));
         input.value = "";
         renderCategories();
       }
@@ -400,7 +575,7 @@
 
     function deleteCategory(cat) {
       storeData.categories = storeData.categories.filter(c => c !== cat);
-      localStorage.setItem('js_cats_v3', JSON.stringify(storeData.categories));
+      localStorage.setItem('js_cats_v4', JSON.stringify(storeData.categories));
       renderCategories();
     }
 
@@ -441,7 +616,7 @@
           alert("¡Producto guardado exitosamente!");
         }
 
-        localStorage.setItem('js_prods_v3', JSON.stringify(storeData.products));
+        localStorage.setItem('js_prods_v4', JSON.stringify(storeData.products));
         renderCatalog();
         resetProductForm();
       };
@@ -487,7 +662,7 @@
 
     function deleteProduct(id) {
       storeData.products = storeData.products.filter(p => p.id !== id);
-      localStorage.setItem('js_prods_v3', JSON.stringify(storeData.products));
+      localStorage.setItem('js_prods_v4', JSON.stringify(storeData.products));
       renderCatalog();
     }
 
@@ -498,16 +673,24 @@
       const fileInput = document.getElementById('setting-logo-file');
       const urlInput = document.getElementById('setting-logo-url')?.value.trim();
 
+      const primary = document.getElementById('theme-primary')?.value || "#800020";
+      const bg = document.getElementById('theme-bg')?.value || "#f8f6f6";
+      const surface = document.getElementById('theme-surface')?.value || "#ffffff";
+      const text = document.getElementById('theme-text')?.value || "#2b2b2b";
+
       const updateData = (logoSrc) => {
         storeData.settings.title = title;
         storeData.settings.sub = sub;
-        if (logoSrc !== undefined) {
-          storeData.settings.logo = logoSrc;
-        }
+        if (logoSrc !== undefined) storeData.settings.logo = logoSrc;
         storeData.settings.phone = phone;
-        localStorage.setItem('js_settings', JSON.stringify(storeData.settings));
+        storeData.settings.primary = primary;
+        storeData.settings.bg = bg;
+        storeData.settings.surface = surface;
+        storeData.settings.text = text;
+
+        localStorage.setItem('js_settings_v4', JSON.stringify(storeData.settings));
         applySettings();
-        alert("¡Apariencia actualizada!");
+        alert("¡Apariencia y colores actualizados!");
       };
 
       if (fileInput && fileInput.files && fileInput.files[0]) {
