@@ -185,40 +185,44 @@
   </div>
 
   <script>
-    let defaultCategories = ["Todos", "Cuidado Facial", "Splash, Cremas, Perfumes"];
+    let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash, Cremas, Perfumes"];
     let defaultProducts = [
-      { id: 101, title: "Crema Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "7.50", img: "https://via.placeholder.com/300?text=Crema+SADOER+Vit+C", status: "Disponible", desc: "Fórmula Iluminadora (Brightening Moist)." },
-      { id: 102, title: "Sérum Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "5.00", img: "https://via.placeholder.com/300?text=Serum+SADOER+Vit+C", status: "Disponible", desc: "¡El toque concentrado de energía que toda piel necesita!" },
-      { id: 103, title: "Espuma Limpiadora Facial SADOER", cat: "Splash, Cremas, Perfumes", price: "9.00", img: "https://via.placeholder.com/300?text=Espuma+Limpiadora", status: "Disponible", desc: "¡El limpiador en mousse más práctico y completo!" },
-      { id: 104, title: "Limpiador Facial SADOER Vitamina C", cat: "Cuidado Facial", price: "6.00", img: "https://via.placeholder.com/300?text=Limpiador+Vit+C", status: "Disponible", desc: "Este limpiador facial ayuda a aclarar la piel de SADOER." },
-      { id: 105, title: "Protector Solar Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "6.50", img: "https://via.placeholder.com/300?text=Protector+Solar+Disaar", status: "Disponible", desc: "¡El aliado perfecto para proteger la piel del sol!" },
-      { id: 106, title: "Jabón en Barra Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Jabon+Disaar", status: "Disponible", desc: "¡El limpiador en barra ideal para purificar la piel!" },
+      { id: 101, title: "Crema Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "7.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Fórmula Iluminadora (Brightening Moist)." },
+      { id: 102, title: "Sérum Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "5.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El toque concentrado de energía que toda piel necesita!" },
+      { id: 103, title: "Espuma Limpiadora Facial SADOER", cat: "Splash, Cremas, Perfumes", price: "9.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El limpiador en mousse más práctico y completo!" },
+      { id: 104, title: "Limpiador Facial SADOER Vitamina C", cat: "Cuidado Facial", price: "6.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Este limpiador facial ayuda a aclarar la piel de SADOER." },
+      { id: 105, title: "Protector Solar Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "6.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El aliado perfecto para proteger la piel del sol!" },
+      { id: 106, title: "Jabón en Barra Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1608248597261-83324467915b?w=400", status: "Disponible", desc: "¡El limpiador en barra ideal para purificar la piel!" },
 
-      { id: 107, title: "Exfoliante Corporal y Facial Disaar Retinol VE", cat: "Cuidado Facial", price: "12.50", img: "https://via.placeholder.com/300?text=Exfoliante+Retinol", status: "Disponible", desc: "¡El exfoliante ideal para renovar la piel mientras hidratas!" },
-      { id: 108, title: "Sérum Facial Ceramide & Vitamin E", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Ceramide", status: "Disponible", desc: "Tratamientos Especializados Multi-acción." },
-      { id: 109, title: "Exfoliante Corporal y Facial Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "12.50", img: "https://via.placeholder.com/300?text=Exfoliante+Acido+Hialuronico", status: "Disponible", desc: "¡El secreto para remover células muertas sin resecar!" },
-      { id: 110, title: "Sérum Facial SADOER 4 in 1 Repair", cat: "Cuidado Facial", price: "6.00", img: "https://via.placeholder.com/300?text=Serum+SADOER+4in1", status: "Disponible", desc: "Este suero facial multifunción de SADOER repara la piel de forma profunda." },
-      { id: 111, title: "Crema Facial SADOER Vitamin C Brightening", cat: "Cuidado Facial", price: "7.50", img: "https://via.placeholder.com/300?text=Crema+SADOER", status: "Disponible", desc: "¡El toque final indispensable para sellar la hidratación!" },
-      { id: 112, title: "Sérum Facial SADOER 5x Vitamin C", cat: "Cuidado Facial", price: "6.00", img: "https://via.placeholder.com/300?text=Serum+SADOER+5x", status: "Disponible", desc: "¡El sérum concentrado que todas quieren en su rutina!" },
+      { id: 107, title: "Exfoliante Corporal y Facial Disaar Retinol VE", cat: "Cuidado Facial", price: "12.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El exfoliante ideal para renovar la piel mientras hidratas!" },
+      { id: 108, title: "Sérum Facial Ceramide & Vitamin E", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción." },
+      { id: 109, title: "Exfoliante Corporal y Facial Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "12.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El secreto para remover células muertas sin resecar!" },
+      { id: 110, title: "Sérum Facial SADOER 4 in 1 Repair", cat: "Cuidado Facial", price: "6.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Este suero facial multifunción de SADOER repara la piel de forma profunda." },
+      { id: 111, title: "Crema Facial SADOER Vitamin C Brightening", cat: "Cuidado Facial", price: "7.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El toque final indispensable para sellar la hidratación!" },
+      { id: 112, title: "Sérum Facial SADOER 5x Vitamin C", cat: "Cuidado Facial", price: "6.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El sérum concentrado que todas quieren en su rutina!" },
 
-      { id: 113, title: "Sérum Facial Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Disaar+HA", status: "Disponible", desc: "¡El serum infaltable para una piel firme y radiante!" },
-      { id: 114, title: "Loción Corporal Disaar Ácido Hialurónico", cat: "Splash, Cremas, Perfumes", price: "12.50", img: "https://via.placeholder.com/300?text=Locion+Corporal+HA", status: "Disponible", desc: "¡Un rescate de hidratación profunda que tus clientes amarán!" },
-      { id: 115, title: "Crema Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "9.00", img: "https://via.placeholder.com/300?text=Crema+Disaar+Retinol", status: "Disponible", desc: "¡El tratamiento hidratante ideal para restaurar la juventud!" },
-      { id: 116, title: "Loción Corporal Disaar Retinol & Vitamina E", cat: "Splash, Cremas, Perfumes", price: "12.50", img: "https://via.placeholder.com/300?text=Locion+Corporal+Retinol", status: "Disponible", desc: "¡El secreto para una piel firme, joven y suave en todo el cuerpo!" },
-      { id: 117, title: "Sérum Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Disaar+Retinol", status: "Disponible", desc: "¡El serum infaltable para renovar la piel y prevenir signos de edad!" },
-      { id: 118, title: "Limpiador Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "7.50", img: "https://via.placeholder.com/300?text=Limpiador+Disaar+Retinol", status: "Disponible", desc: "¡El paso esencial para preparar la piel y eliminar impurezas!" },
+      { id: 113, title: "Sérum Facial Disaar Ácido Hialurónico", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El serum infaltable para una piel firme y radiante!" },
+      { id: 114, title: "Loción Corporal Disaar Ácido Hialurónico", cat: "Splash, Cremas, Perfumes", price: "12.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡Un rescate de hidratación profunda que tus clientes amarán!" },
+      { id: 115, title: "Crema Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "9.00", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El tratamiento hidratante ideal para restaurar la juventud!" },
+      { id: 116, title: "Loción Corporal Disaar Retinol & Vitamina E", cat: "Splash, Cremas, Perfumes", price: "12.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El secreto para una piel firme, joven y suave en todo el cuerpo!" },
+      { id: 117, title: "Sérum Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El serum infaltable para renovar la piel y prevenir signos de edad!" },
+      { id: 118, title: "Limpiador Facial Disaar Retinol & Vitamina E", cat: "Cuidado Facial", price: "7.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡El paso esencial para preparar la piel y eliminar impurezas!" },
 
-      { id: 119, title: "Crema Facial Disaar 7 in 1 Grape Seed", cat: "Cuidado Facial", price: "8.50", img: "https://via.placeholder.com/300?text=Crema+Disaar+Grape+Seed", status: "Disponible", desc: "¡La fórmula multi-acción perfecta para unificar el tono!" },
-      { id: 120, title: "Crema Facial Disaar 7 in 1 Peptides & Shea", cat: "Cuidado Facial", price: "8.50", img: "https://via.placeholder.com/300?text=Crema+Disaar+Peptides", status: "Disponible", desc: "¡La solución «todo en uno» perfecta para nutrir profundamente!" },
-      { id: 121, title: "Sérum Facial Peptides & Collagen", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Peptides+Collagen", status: "Disponible", desc: "Tratamientos Especializados Multi-acción para firmeza." },
-      { id: 122, title: "Sérum Facial Grape Seed & Niacinamide", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Grape+Seed", status: "Disponible", desc: "Tratamientos Especializados Multi-acción iluminadores." },
-      { id: 123, title: "Sérum Facial Retinol & Vitamin E-Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+Retinol+7in1", status: "Disponible", desc: "Tratamientos Especializados Multi-acción antiedad." },
-      { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://via.placeholder.com/300?text=Serum+PDRN+Ceramide", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." }
+      { id: 119, title: "Crema Facial Disaar 7 in 1 Grape Seed", cat: "Cuidado Facial", price: "8.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡La fórmula multi-acción perfecta para unificar el tono!" },
+      { id: 120, title: "Crema Facial Disaar 7 in 1 Peptides & Shea", cat: "Cuidado Facial", price: "8.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "¡La solución «todo en uno» perfecta para nutrir profundamente!" },
+      { id: 121, title: "Sérum Facial Peptides & Collagen", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción para firmeza." },
+      { id: 122, title: "Sérum Facial Grape Seed & Niacinamide", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción iluminadores." },
+      { id: 123, title: "Sérum Facial Retinol & Vitamin E-Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción antiedad." },
+      { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." }
     ];
 
+    // FORZAMOS LA LIMPIEZA DE MEMORIA VIEJA
+    localStorage.setItem('js_prods', JSON.stringify(defaultProducts));
+    localStorage.setItem('js_cats', JSON.stringify(defaultCategories));
+
     let storeData = {
-      categories: JSON.parse(localStorage.getItem('js_cats')) || defaultCategories,
-      products: JSON.parse(localStorage.getItem('js_prods')) || defaultProducts,
+      categories: defaultCategories,
+      products: defaultProducts,
       settings: JSON.parse(localStorage.getItem('js_settings')) || { title: "Joliee Store", sub: "Catálogo Oficial", logo: "", phone: "" },
       activeCat: "Todos"
     };
