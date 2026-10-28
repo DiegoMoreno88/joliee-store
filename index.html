@@ -185,7 +185,7 @@
   </div>
 
   <script>
-    let defaultCategories = ["Todos", "Cuidado Facial", "Bases y Correctores", "Polvos y Rubores", "Splash, Cremas, Perfumes"];
+    let defaultCategories = ["Todos", "Cuidado Facial", "Splash, Cremas, Perfumes"];
     let defaultProducts = [
       { id: 101, title: "Crema Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "7.50", img: "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400", status: "Disponible", desc: "Fórmula Iluminadora (Brightening Moist)." },
       { id: 102, title: "Sérum Facial SADOER Vitamin C", cat: "Cuidado Facial", price: "5.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "¡El toque concentrado de energía que toda piel necesita!" },
@@ -216,13 +216,16 @@
       { id: 124, title: "Sérum Facial PDRN & Ceramide -Línea 7in1", cat: "Cuidado Facial", price: "7.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", desc: "Tratamientos Especializados Multi-acción regeneradores." }
     ];
 
-    // FORZAMOS LA LIMPIEZA DE MEMORIA VIEJA
-    localStorage.setItem('js_prods', JSON.stringify(defaultProducts));
-    localStorage.setItem('js_cats', JSON.stringify(defaultCategories));
+    // FORZAMOS LA LIMPIEZA DE MEMORIA ANTIGUA PARA ESTA VERSIÓN
+    if (!localStorage.getItem('js_store_v2_reset')) {
+      localStorage.removeItem('js_prods');
+      localStorage.removeItem('js_cats');
+      localStorage.setItem('js_store_v2_reset', 'true');
+    }
 
     let storeData = {
-      categories: defaultCategories,
-      products: defaultProducts,
+      categories: JSON.parse(localStorage.getItem('js_cats')) || defaultCategories,
+      products: JSON.parse(localStorage.getItem('js_prods')) || defaultProducts,
       settings: JSON.parse(localStorage.getItem('js_settings')) || { title: "Joliee Store", sub: "Catálogo Oficial", logo: "", phone: "" },
       activeCat: "Todos"
     };
