@@ -20,11 +20,11 @@
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-4">
-                <!-- LOGOTIPO AMPLIADO Y DESTACADO -->
-                <img id="store-logo-img" src="" alt="Logo" class="w-16 h-16 md:w-20 md:h-20 object-cover rounded-full hidden shadow-md border-2 border-primary">
+                <!-- LOGO GRANDE -->
+                <img id="store-logo-img" src="" alt="Logo" class="w-20 h-20 object-cover rounded-full hidden shadow-md border-2 border-primary">
                 <div>
-                    <h1 id="store-title" class="text-2xl md:text-3xl font-bold text-primary tracking-wide">Joliee Store</h1>
-                    <p id="store-subtitle" class="text-xs md:text-sm text-gray-500">Catálogo Oficial</p>
+                    <h1 id="store-title" class="text-3xl font-bold text-primary tracking-wide">Joliee Store</h1>
+                    <p id="store-subtitle" class="text-sm text-gray-500">Catálogo Oficial</p>
                 </div>
             </div>
             <div class="flex items-center gap-3">
@@ -58,7 +58,7 @@
 
         <!-- PAGINACIÓN ABREVIADA (1, 2, 3, 4 ... 19) -->
         <div id="pagination-container" class="flex flex-wrap justify-center items-center gap-2 mt-10 pb-6">
-            <!-- Botones numéricos dinámicos -->
+            <!-- Botones numéricos dinámicos con puntos suspensivos -->
         </div>
     </main>
 
@@ -117,10 +117,10 @@
                         <input type="text" id="cfg-logo" class="w-full p-2 border rounded-xl bg-white text-sm" placeholder="https://...">
                     </div>
                     <div>
-                        <label class="text-xs font-semibold text-gray-600">Color Principal de la Tienda (Paleta)</label>
+                        <label class="text-xs font-semibold text-gray-600">Paleta de Colores (Color Principal)</label>
                         <div class="flex items-center gap-3 mt-1">
                             <input type="color" id="cfg-color" value="#881337" class="w-12 h-10 p-1 border rounded-lg cursor-pointer bg-white">
-                            <span class="text-xs text-gray-500">Selecciona el tono principal de la marca</span>
+                            <span class="text-xs text-gray-500">Selecciona el tono de tu tienda</span>
                         </div>
                     </div>
                     <div>
@@ -554,7 +554,7 @@
                 </div>
             `).join('');
 
-            // Paginación abreviada (1, 2, 3, 4 ... 19)
+            // Paginación abreviada con puntos suspensivos (1, 2, 3, 4 ... 19)
             if (totalPages > 1) {
                 let pagesHtml = '';
                 let showDotsBefore = false;
