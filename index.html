@@ -10,11 +10,14 @@
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- Header / Navbar -->
-    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-40 transition-colors">
+    <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div>
-                <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
-                <p id="store-subtitle" class="text-xs text-gray-500">Catálogo Oficial</p>
+            <div class="flex items-center gap-3">
+                <img id="store-logo-img" src="" alt="Logo" class="w-10 h-10 object-cover rounded-full hidden">
+                <div>
+                    <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
+                    <p id="store-subtitle" class="text-xs text-gray-500">Catálogo Oficial</p>
+                </div>
             </div>
             <div class="flex items-center gap-3">
                 <button onclick="openAdminModal()" class="p-2 text-gray-600 hover:text-rose-900 transition rounded-full hover:bg-gray-100">
@@ -86,20 +89,25 @@
 
             <!-- Contenido Admin -->
             <div id="admin-panel-content" class="hidden space-y-6">
-                <!-- Pestañas o secciones de admin -->
-                <div class="bg-gray-50 p-4 rounded-xl border">
-                    <h4 class="font-bold text-gray-800 mb-2">Personalizar Apariencia de la Tienda</h4>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="text-xs font-semibold text-gray-600">Nombre de la Tienda</label>
-                            <input type="text" id="cfg-title" class="w-full p-2 border rounded-xl bg-white text-sm">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-gray-600">Subtítulo / Eslogan</label>
-                            <input type="text" id="cfg-subtitle" class="w-full p-2 border rounded-xl bg-white text-sm">
-                        </div>
-                        <button onclick="saveStoreConfig()" class="w-full bg-gray-800 text-white py-2 rounded-xl text-sm font-medium hover:bg-gray-900 transition">Guardar Cambios de Apariencia</button>
+                <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
+                    <h4 class="font-bold text-gray-800">Personalizar Tienda y Seguridad</h4>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-600">Nombre de la Tienda</label>
+                        <input type="text" id="cfg-title" class="w-full p-2 border rounded-xl bg-white text-sm">
                     </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-600">Subtítulo / Eslogan</label>
+                        <input type="text" id="cfg-subtitle" class="w-full p-2 border rounded-xl bg-white text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-600">URL del Logo / Imagen de la Tienda</label>
+                        <input type="text" id="cfg-logo" class="w-full p-2 border rounded-xl bg-white text-sm" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-gray-600">Nueva Contraseña de Administrador</label>
+                        <input type="password" id="cfg-pass" class="w-full p-2 border rounded-xl bg-white text-sm" placeholder="Dejar en blanco para mantener la actual">
+                    </div>
+                    <button onclick="saveStoreConfig()" class="w-full bg-gray-800 text-white py-2 rounded-xl text-sm font-medium hover:bg-gray-900 transition">Guardar Cambios de Apariencia</button>
                 </div>
 
                 <div>
@@ -140,7 +148,6 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Credenciales con el projectId corregido: joliee-store
         const firebaseConfig = {
             apiKey: "AIzaSyBKoLN6-BfqP-M7KydSV1E5Ey3w6f6P7E",
             authDomain: "joliee-store.firebaseapp.com",
@@ -153,6 +160,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
+        // PEGA AQUÍ TUS 220 PRODUCTOS DENTRO DE ESTE ARREGLO
         const fallbackProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
@@ -377,40 +385,46 @@
 ];
 
         let currentProducts = [];
-        let storeConfig = { title: "Joliee Store", subtitle: "Catálogo Oficial" };
+        let storeConfig = { title: "Joliee Store", subtitle: "Catálogo Oficial", logo: "", adminPass: "1234" };
         let selectedCategory = 'Todos';
 
         async function loadStoreData() {
             try {
-                // Cargar configuración de la tienda
                 const cfgRef = doc(db, "store_data", "config");
                 const cfgSnap = await getDoc(cfgRef);
                 if (cfgSnap.exists()) {
-                    storeConfig = cfgSnap.data();
+                    storeConfig = { ...storeConfig, ...cfgSnap.data() };
                 }
                 document.getElementById('store-title').innerText = storeConfig.title || "Joliee Store";
                 document.getElementById('store-subtitle').innerText = storeConfig.subtitle || "Catálogo Oficial";
+                
+                const logoImg = document.getElementById('store-logo-img');
+                if (storeConfig.logo) {
+                    logoImg.src = storeConfig.logo;
+                    logoImg.classList.remove('hidden');
+                } else {
+                    logoImg.classList.add('hidden');
+                }
 
-                // Cargar productos
                 const prodRef = doc(db, "store_data", "products_list");
                 const prodSnap = await getDoc(prodRef);
                 
-                if (!prodSnap.exists() || Object.keys(prodSnap.data()).length === 0) {
-                    currentProducts = fallbackProducts;
-                    if (fallbackProducts.length > 0) {
-                        const dataObject = {};
-                        fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                        await setDoc(prodRef, dataObject, { merge: true });
-                    }
-                } else {
+                let cloudProducts = [];
+                if (prodSnap.exists()) {
                     const data = prodSnap.data();
-                    currentProducts = Object.values(data).filter(item => typeof item === 'object' && item !== null && 'id' in item);
-                    if (currentProducts.length === 0 && fallbackProducts.length > 0) {
-                        currentProducts = fallbackProducts;
-                        const dataObject = {};
-                        fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                        await setDoc(prodRef, dataObject, { merge: true });
-                    }
+                    cloudProducts = Object.values(data).filter(item => typeof item === 'object' && item !== null && 'id' in item);
+                }
+
+                // Si la nube tiene pocos productos y tenemos fallback configurado, fusionamos o priorizamos el respaldo completo de los 220
+                if (cloudProducts.length < fallbackProducts.length) {
+                    currentProducts = fallbackProducts;
+                    const dataObject = {};
+                    fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
+                    await setDoc(prodRef, dataObject, { merge: true });
+                } else if (cloudProducts.length > 0) {
+                    currentProducts = cloudProducts;
+                } else {
+                    currentProducts = fallbackProducts;
                 }
             } catch (err) {
                 console.error("Error al cargar la tienda:", err);
@@ -423,12 +437,28 @@
         window.saveStoreConfig = async function() {
             const title = document.getElementById('cfg-title').value.trim();
             const subtitle = document.getElementById('cfg-subtitle').value.trim();
-            storeConfig = { title: title || "Joliee Store", subtitle: subtitle || "Catálogo Oficial" };
+            const logo = document.getElementById('cfg-logo').value.trim();
+            const newPass = document.getElementById('cfg-pass').value.trim();
+
+            storeConfig.title = title || "Joliee Store";
+            storeConfig.subtitle = subtitle || "Catálogo Oficial";
+            storeConfig.logo = logo;
+            if (newPass) {
+                storeConfig.adminPass = newPass;
+            }
+
             try {
                 await setDoc(doc(db, "store_data", "config"), storeConfig, { merge: true });
                 document.getElementById('store-title').innerText = storeConfig.title;
                 document.getElementById('store-subtitle').innerText = storeConfig.subtitle;
-                alert('¡Apariencia actualizada con éxito!');
+                const logoImg = document.getElementById('store-logo-img');
+                if (storeConfig.logo) {
+                    logoImg.src = storeConfig.logo;
+                    logoImg.classList.remove('hidden');
+                } else {
+                    logoImg.classList.add('hidden');
+                }
+                alert('¡Configuración guardada con éxito!');
             } catch (err) {
                 alert('Error al guardar configuración: ' + err.message);
             }
@@ -536,11 +566,14 @@
 
         window.verifyAdminPassword = function() {
             const pass = document.getElementById('admin-pass-input').value;
-            if (pass === "1234") {
+            const validPass = storeConfig.adminPass || "1234";
+            if (pass === validPass) {
                 document.getElementById('admin-login-section').classList.add('hidden');
                 document.getElementById('admin-panel-content').classList.remove('hidden');
                 document.getElementById('cfg-title').value = storeConfig.title || "";
                 document.getElementById('cfg-subtitle').value = storeConfig.subtitle || "";
+                document.getElementById('cfg-logo').value = storeConfig.logo || "";
+                document.getElementById('cfg-pass').value = "";
                 renderAdminProductsList();
             } else {
                 alert("Contraseña incorrecta");
