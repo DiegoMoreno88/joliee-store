@@ -117,15 +117,16 @@
         </div>
     </div>
 
-    <!-- Firebase SDK e ఇంica Script Principal -->
+    <!-- Firebase SDK y Script Principal -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+        // Credenciales corregidas con el projectId real: joliee-store
         const firebaseConfig = {
             apiKey: "AIzaSyBKoLN6-BfqP-M7KydSV1E5Ey3w6f6P7E",
             authDomain: "joliee-store.firebaseapp.com",
-            projectId: "jolie-store",
+            projectId: "joliee-store",
             storageBucket: "joliee-store.firebasestorage.app",
             messagingSenderId: "1043661690772",
             appId: "1:1043661690772:web:4d728e1546e755b0fbe181"
@@ -134,7 +135,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // AQUÍ PUEDES AGREGAR TUS 220 PRODUCTOS EN FALLBACKPRODUCTS SI GUSTAS
         const fallbackProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
@@ -366,7 +366,6 @@
                 const prodRef = doc(db, "store_data", "products_list");
                 const prodSnap = await getDoc(prodRef);
                 
-                // Sincronización automática rápida si la nube está vacía
                 if (!prodSnap.exists() || Object.keys(prodSnap.data()).length === 0) {
                     currentProducts = fallbackProducts;
                     if (fallbackProducts.length > 0) {
