@@ -10,7 +10,7 @@
 <body class="bg-gray-50 text-gray-800 font-sans">
 
     <!-- Header / Navbar -->
-    <header class="bg-white shadow-sm sticky top-0 z-40">
+    <header id="main-header" class="bg-white shadow-sm sticky top-0 z-40 transition-colors">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
                 <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
@@ -85,13 +85,31 @@
             </div>
 
             <!-- Contenido Admin -->
-            <div id="admin-panel-content" class="hidden">
-                <div class="flex justify-between items-center mb-4">
-                    <h4 class="font-bold text-gray-800">Lista de Productos</h4>
-                    <button onclick="openProductForm()" class="bg-rose-900 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-rose-800 transition"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
+            <div id="admin-panel-content" class="hidden space-y-6">
+                <!-- Pestañas o secciones de admin -->
+                <div class="bg-gray-50 p-4 rounded-xl border">
+                    <h4 class="font-bold text-gray-800 mb-2">Personalizar Apariencia de la Tienda</h4>
+                    <div class="space-y-3">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-600">Nombre de la Tienda</label>
+                            <input type="text" id="cfg-title" class="w-full p-2 border rounded-xl bg-white text-sm">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-gray-600">Subtítulo / Eslogan</label>
+                            <input type="text" id="cfg-subtitle" class="w-full p-2 border rounded-xl bg-white text-sm">
+                        </div>
+                        <button onclick="saveStoreConfig()" class="w-full bg-gray-800 text-white py-2 rounded-xl text-sm font-medium hover:bg-gray-900 transition">Guardar Cambios de Apariencia</button>
+                    </div>
                 </div>
-                <div id="admin-products-list" class="space-y-2 max-h-96 overflow-y-auto pr-1">
-                    <!-- Renderizado de productos para admin -->
+
+                <div>
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="font-bold text-gray-800">Lista de Productos</h4>
+                        <button onclick="openProductForm()" class="bg-rose-900 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-rose-800 transition"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
+                    </div>
+                    <div id="admin-products-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 border rounded-xl p-2 bg-gray-50">
+                        <!-- Renderizado de productos para admin -->
+                    </div>
                 </div>
             </div>
 
@@ -122,7 +140,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Credenciales corregidas con el projectId real: joliee-store
+        // Credenciales con el projectId corregido: joliee-store
         const firebaseConfig = {
             apiKey: "AIzaSyBKoLN6-BfqP-M7KydSV1E5Ey3w6f6P7E",
             authDomain: "joliee-store.firebaseapp.com",
@@ -359,10 +377,21 @@
 ];
 
         let currentProducts = [];
+        let storeConfig = { title: "Joliee Store", subtitle: "Catálogo Oficial" };
         let selectedCategory = 'Todos';
 
         async function loadStoreData() {
             try {
+                // Cargar configuración de la tienda
+                const cfgRef = doc(db, "store_data", "config");
+                const cfgSnap = await getDoc(cfgRef);
+                if (cfgSnap.exists()) {
+                    storeConfig = cfgSnap.data();
+                }
+                document.getElementById('store-title').innerText = storeConfig.title || "Joliee Store";
+                document.getElementById('store-subtitle').innerText = storeConfig.subtitle || "Catálogo Oficial";
+
+                // Cargar productos
                 const prodRef = doc(db, "store_data", "products_list");
                 const prodSnap = await getDoc(prodRef);
                 
@@ -389,6 +418,20 @@
             }
             renderCategories();
             renderProducts();
+        }
+
+        window.saveStoreConfig = async function() {
+            const title = document.getElementById('cfg-title').value.trim();
+            const subtitle = document.getElementById('cfg-subtitle').value.trim();
+            storeConfig = { title: title || "Joliee Store", subtitle: subtitle || "Catálogo Oficial" };
+            try {
+                await setDoc(doc(db, "store_data", "config"), storeConfig, { merge: true });
+                document.getElementById('store-title').innerText = storeConfig.title;
+                document.getElementById('store-subtitle').innerText = storeConfig.subtitle;
+                alert('¡Apariencia actualizada con éxito!');
+            } catch (err) {
+                alert('Error al guardar configuración: ' + err.message);
+            }
         }
 
         window.renderCategories = function() {
@@ -496,6 +539,8 @@
             if (pass === "1234") {
                 document.getElementById('admin-login-section').classList.add('hidden');
                 document.getElementById('admin-panel-content').classList.remove('hidden');
+                document.getElementById('cfg-title').value = storeConfig.title || "";
+                document.getElementById('cfg-subtitle').value = storeConfig.subtitle || "";
                 renderAdminProductsList();
             } else {
                 alert("Contraseña incorrecta");
@@ -505,7 +550,7 @@
         window.renderAdminProductsList = function() {
             const list = document.getElementById('admin-products-list');
             list.innerHTML = currentProducts.map(p => `
-                <div class="flex items-center justify-between p-2 bg-gray-50 rounded-xl border">
+                <div class="flex items-center justify-between p-2 bg-white rounded-xl border mb-2">
                     <div class="flex items-center gap-3">
                         <img src="${p.img}" class="w-10 h-10 object-cover rounded-lg">
                         <div>
