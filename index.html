@@ -3,192 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="html-title">Joliee Store - Catálogo Oficial</title>
+    <title>Joliee Store - Catálogo Oficial</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --color-primary: #881337;
-            --color-primary-hover: #9f1239;
-            --color-bg: #f9fafb;
-            --color-text: #1f2937;
-        }
-        body { background-color: var(--color-bg); color: var(--color-text); }
-        .bg-custom-primary { background-color: var(--color-primary); }
-        .bg-custom-primary:hover { background-color: var(--color-primary-hover); }
-        .text-custom-primary { color: var(--color-primary); }
-        .border-custom-primary { border-color: var(--color-primary); }
-    </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-    <!-- Encabezado -->
+    <!-- Header / Navbar -->
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <img id="store-logo-img" src="" alt="Logo" class="h-10 object-contain hidden">
-                <div>
-                    <h1 id="store-title-header" class="text-2xl font-bold text-custom-primary">Joliee Store</h1>
-                    <p class="text-sm text-gray-500">Catálogo Oficial</p>
-                </div>
+            <div>
+                <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
+                <p id="store-subtitle" class="text-xs text-gray-500">Catálogo Oficial</p>
             </div>
-            <div class="flex items-center space-x-3">
-                <button onclick="openAdminModal()" class="p-2 text-gray-600 hover:text-custom-primary transition" title="Panel de Administración">
+            <div class="flex items-center gap-3">
+                <button onclick="openAdminModal()" class="p-2 text-gray-600 hover:text-rose-900 transition rounded-full hover:bg-gray-100">
                     <i class="fa-solid fa-gear text-xl"></i>
                 </button>
             </div>
         </div>
     </header>
 
-    <!-- Filtros y Búsqueda -->
-    <div class="max-w-7xl mx-auto px-4 mt-6 w-full">
-        <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 py-6">
+        <!-- Buscador y Filtros -->
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
             <div class="relative w-full md:w-96">
-                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                </span>
-                <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por producto..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-900">
+                <i class="fa-solid fa-search absolute left-3 top-3 text-gray-400"></i>
+                <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por producto..." class="w-full pl-10 pr-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-900 bg-white">
             </div>
-            <div id="category-filters" class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end"></div>
+            <div id="categories-container" class="flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2">
+                <!-- Categorías dinámicas -->
+            </div>
         </div>
-    </div>
 
-    <!-- Catálogo -->
-    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        <!-- Grid de Productos -->
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <div class="col-span-full text-center py-12 text-gray-400">Sincronizando inventario con la nube...</div>
+            <!-- Renderizado dinámico -->
         </div>
-        <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-10"></div>
+        <div id="no-products" class="hidden text-center py-16 text-gray-400">
+            No se encontraron productos.
+        </div>
     </main>
 
-    <!-- Modal de Detalle del Producto -->
-    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 relative overflow-hidden">
-            <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-20 bg-white/80 rounded-full p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="w-full md:w-1/2 flex flex-col items-center">
-                    <div class="h-64 w-full bg-gray-100 rounded-xl overflow-hidden relative shadow-inner">
-                        <img id="detail-main-img" src="" alt="" class="w-full h-full object-cover">
-                    </div>
-                    <div id="detail-gallery-thumbs" class="flex gap-2 mt-3 overflow-x-auto w-full justify-center"></div>
-                </div>
-                <div class="w-full md:w-1/2 flex flex-col justify-between">
-                    <div>
-                        <span id="detail-product-cat" class="text-xs font-bold px-2.5 py-1 bg-rose-50 text-custom-primary rounded-full uppercase tracking-wider"></span>
-                        <h2 id="detail-product-title" class="text-2xl font-bold text-gray-800 mt-2 mb-2"></h2>
-                        <p id="detail-product-price" class="text-2xl font-extrabold text-custom-primary mb-4"></p>
-                        <p id="detail-product-desc" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
-                    </div>
-                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
-                        <span id="detail-product-status" class="text-xs px-3 py-1 bg-emerald-50 text-emerald-700 rounded-md font-semibold"></span>
-                        <button onclick="closeProductDetailModal()" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">Cerrar</button>
-                    </div>
+    <!-- Modal Detalle de Producto -->
+    <div id="product-detail-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full overflow-hidden shadow-2xl relative animate-fadeIn">
+            <button onclick="closeProductDetail()" class="absolute top-4 right-4 bg-white/80 hover:bg-white p-2 rounded-full text-gray-700 transition shadow">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+            <div>
+                <img id="detail-main-img" src="" alt="Producto" class="w-full h-72 object-cover">
+                <!-- Miniaturas de galería -->
+                <div id="detail-gallery-thumbs" class="flex gap-2 p-3 overflow-x-auto bg-gray-50 border-t hidden"></div>
+            </div>
+            <div class="p-6">
+                <span id="detail-product-cat" class="text-xs font-semibold text-rose-800 uppercase tracking-wider"></span>
+                <h2 id="detail-product-title" class="text-xl font-bold text-gray-900 mt-1"></h2>
+                <p id="detail-product-price" class="text-2xl font-black text-rose-900 mt-2"></p>
+                <p id="detail-product-desc" class="text-gray-600 text-sm mt-4 leading-relaxed"></p>
+                <div class="mt-6 pt-4 border-t flex justify-between items-center">
+                    <span id="detail-product-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">Disponible</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Admin Completo -->
-    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4 overflow-y-auto">
-        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 relative max-h-[90vh] flex flex-col">
-            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+    <!-- Modal Admin / Configuración -->
+    <div id="admin-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 class="text-lg font-bold text-rose-900">Panel de Administración</h3>
+                <button onclick="closeAdminModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
             
-            <div id="admin-login-view">
-                <h3 class="text-xl font-bold text-gray-800 mb-4">Panel de Administración</h3>
-                <input type="password" id="admin-password" placeholder="Contraseña (por defecto 1234)" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
-                <button onclick="verifyAdminPassword()" class="w-full bg-custom-primary text-white py-2 rounded-lg">Entrar</button>
+            <!-- Login Admin (Contraseña) -->
+            <div id="admin-login-section">
+                <p class="text-sm text-gray-600 mb-3">Introduce la clave de acceso:</p>
+                <input type="password" id="admin-pass-input" placeholder="Contraseña" class="w-full p-2 border rounded-xl mb-3">
+                <button onclick="verifyAdminPassword()" class="w-full bg-rose-900 text-white py-2 rounded-xl font-medium hover:bg-rose-800 transition">Entrar</button>
             </div>
 
-            <div id="admin-dashboard-view" class="hidden flex-col h-full overflow-hidden">
-                <div class="flex border-b mb-4 pb-2 space-x-2">
-                    <button onclick="switchTab('products')" id="tab-btn-products" class="px-4 py-2 text-sm font-bold bg-custom-primary text-white rounded-lg">Gestión de Productos</button>
-                    <button onclick="switchTab('appearance')" id="tab-btn-appearance" class="px-4 py-2 text-sm font-bold bg-gray-200 text-gray-700 rounded-lg">Apariencia y Ajustes</button>
+            <!-- Contenido Admin -->
+            <div id="admin-panel-content" class="hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-gray-800">Lista de Productos</h4>
+                    <button onclick="openProductForm()" class="bg-rose-900 text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-rose-800 transition"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
                 </div>
-
-                <!-- SECCIÓN 1: PRODUCTOS -->
-                <div id="tab-content-products" class="flex flex-col h-full overflow-hidden">
-                    <div class="flex justify-between items-center mb-3">
-                        <h4 class="font-bold text-sm text-gray-700">Lista de Productos</h4>
-                        <button onclick="showAddProductForm()" class="bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg"><i class="fa-solid fa-plus"></i> Nuevo Producto</button>
-                    </div>
-
-                    <div id="product-form-container" class="hidden mb-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
-                        <h5 id="form-title" class="font-bold text-xs text-gray-700 mb-2">Editar Producto</h5>
-                        <input type="hidden" id="form-id">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
-                            <input type="text" id="form-title-input" placeholder="Nombre" class="px-3 py-1.5 border rounded text-xs">
-                            <input type="text" id="form-cat-input" placeholder="Categoría" class="px-3 py-1.5 border rounded text-xs">
-                            <input type="text" id="form-price-input" placeholder="Precio ($)" class="px-3 py-1.5 border rounded text-xs">
-                            <input type="text" id="form-img-input" placeholder="URL Foto Principal" class="px-3 py-1.5 border rounded text-xs">
-                        </div>
-                        <input type="text" id="form-gallery-input" placeholder="Links adicionales separados por comas (,)" class="w-full px-3 py-1.5 border rounded text-xs mb-2">
-                        <textarea id="form-desc-input" placeholder="Descripción" class="w-full px-3 py-1.5 border rounded text-xs mb-2" rows="2"></textarea>
-                        <div class="flex justify-end space-x-2">
-                            <button onclick="cancelProductForm()" class="px-3 py-1 bg-gray-200 text-xs rounded">Cancelar</button>
-                            <button onclick="saveProductToCloud()" class="px-3 py-1 bg-custom-primary text-white text-xs rounded">Guardar Producto</button>
-                        </div>
-                    </div>
-
-                    <div class="overflow-y-auto flex-grow max-h-[40vh] space-y-2 pr-1">
-                        <div id="admin-products-list"></div>
-                    </div>
+                <div id="admin-products-list" class="space-y-2 max-h-96 overflow-y-auto pr-1">
+                    <!-- Renderizado de productos para admin -->
                 </div>
+            </div>
 
-                <!-- SECCIÓN 2: APARIENCIA Y SEGURIDAD -->
-                <div id="tab-content-appearance" class="hidden flex-col space-y-4 overflow-y-auto max-h-[50vh] pr-1">
-                    <div class="p-3 bg-gray-50 border rounded-lg space-y-3">
-                        <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-palette"></i> Apariencia</h4>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600">Color Principal</label>
-                            <input type="color" id="settings-primary-color" value="#881337" class="w-full h-10 p-1 border rounded cursor-pointer">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600">Nombre de la Tienda</label>
-                            <input type="text" id="settings-store-title" value="Joliee Store" class="w-full px-3 py-1.5 border rounded text-sm">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-semibold text-gray-600">URL del Logo (Opcional)</label>
-                            <input type="text" id="settings-store-logo" placeholder="https://..." class="w-full px-3 py-1.5 border rounded text-sm">
-                        </div>
+            <!-- Formulario de Producto -->
+            <div id="product-form-container" class="hidden mt-4 pt-4 border-t">
+                <h4 id="form-action-title" class="font-bold text-gray-800 mb-3">Añadir / Editar Producto</h4>
+                <input type="hidden" id="form-id">
+                <div class="space-y-3">
+                    <input type="text" id="form-title-input" placeholder="Título del producto" class="w-full p-2 border rounded-xl">
+                    <div class="grid grid-cols-2 gap-2">
+                        <input type="text" id="form-cat-input" placeholder="Categoría" class="w-full p-2 border rounded-xl">
+                        <input type="text" id="form-price-input" placeholder="Precio ($)" class="w-full p-2 border rounded-xl">
                     </div>
-
-                    <div class="p-3 bg-gray-50 border rounded-lg space-y-3">
-                        <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-lock"></i> Contraseña de Admin</h4>
-                        <input type="password" id="settings-new-password" placeholder="Nueva clave" class="w-full px-3 py-1.5 border rounded text-sm">
+                    <input type="text" id="form-img-input" placeholder="URL Imagen Principal" class="w-full p-2 border rounded-xl">
+                    <input type="text" id="form-gallery-input" placeholder="URLs adicionales separadas por comas (,)" class="w-full p-2 border rounded-xl">
+                    <textarea id="form-desc-input" placeholder="Descripción detallada" class="w-full p-2 border rounded-xl h-24 resize-none"></textarea>
+                    <div class="flex justify-end gap-2">
+                        <button onclick="cancelProductForm()" class="px-4 py-2 bg-gray-200 rounded-xl text-sm font-medium">Cancelar</button>
+                        <button onclick="saveProductToCloud()" class="px-4 py-2 bg-rose-900 text-white rounded-xl text-sm font-medium hover:bg-rose-800">Guardar Producto</button>
                     </div>
-
-                    <button onclick="saveSettingsToCloud()" class="w-full bg-custom-primary text-white py-2 rounded-lg text-sm font-bold">Guardar Ajustes</button>
-                </div>
-
-                <div class="mt-3 pt-2 border-t flex justify-between items-center text-xs text-gray-500">
-                    <span>Total en inventario: <strong id="admin-total-count">0</strong></span>
-                    <span class="text-emerald-700 font-semibold"><i class="fa-solid fa-cloud"></i> Nube Activa</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <footer class="bg-white border-t border-gray-200 py-6 mt-12 text-center text-sm text-gray-500">
-        <p>&copy; 2026 Joliee Store. Todos los derechos reservados.</p>
-    </footer>
-
+    <!-- Firebase SDK e ఇంica Script Principal -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-  apiKey: "AIzaSyBKoLN6-BfqP-MB7KydSVlE5Ey3w6f6P7E",
-  authDomain: "joliee-store.firebaseapp.com",
-  projectId: "joliee-store",
-  storageBucket: "joliee-store.firebasestorage.app",
-  messagingSenderId: "1043661690772",
-  appId: "1:1043661690772:web:4d728e1546e755b0fbe181"
-};
+            apiKey: "AIzaSyBKoLN6-BfqP-M7KydSV1E5Ey3w6f6P7E",
+            authDomain: "joliee-store.firebaseapp.com",
+            projectId: "jolie-store",
+            storageBucket: "joliee-store.firebasestorage.app",
+            messagingSenderId: "1043661690772",
+            appId: "1:1043661690772:web:4d728e1546e755b0fbe181"
+        };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const fallbackProducts = [  
+        // AQUÍ PUEDES AGREGAR TUS 220 PRODUCTOS EN FALLBACKPRODUCTS SI GUSTAS
+        const fallbackProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
   { id: 3, title: "Labial Mate Terciopelo", cat: "Labiales", price: "8.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", visibility: "Mostrar", desc: "Alta pigmentación y larga duración." },
@@ -412,103 +359,102 @@
 ];
 
         let currentProducts = [];
-        let storeSettings = {
-            primaryColor: "#881337",
-            storeTitle: "Joliee Store",
-            storeLogo: "",
-            adminPassword: "1234"
-        };
-
-        let currentCategory = "Todos";
-        let currentPage = 1;
-        const itemsPerPage = 24;
+        let selectedCategory = 'Todos';
 
         async function loadStoreData() {
             try {
-                const settingsRef = doc(db, "store_data", "settings");
-                const settingsSnap = await getDoc(settingsRef);
-                if (settingsSnap.exists()) {
-                    storeSettings = { ...storeSettings, ...settingsSnap.data() };
-                }
-                applySettingsToUI();
-
                 const prodRef = doc(db, "store_data", "products_list");
                 const prodSnap = await getDoc(prodRef);
                 
-                if (prodSnap.exists() && Object.keys(prodSnap.data()).length > 0) {
+                // Sincronización automática rápida si la nube está vacía
+                if (!prodSnap.exists() || Object.keys(prodSnap.data()).length === 0) {
+                    currentProducts = fallbackProducts;
+                    if (fallbackProducts.length > 0) {
+                        const dataObject = {};
+                        fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
+                        await setDoc(prodRef, dataObject, { merge: true });
+                    }
+                } else {
                     const data = prodSnap.data();
                     currentProducts = Object.values(data).filter(item => typeof item === 'object' && item !== null && 'id' in item);
-                } else if (fallbackProducts.length > 0) {
-                    currentProducts = fallbackProducts;
-                    const dataObject = {};
-                    fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                    await setDoc(prodRef, dataObject, { merge: true });
-                } else {
-                    currentProducts = [];
+                    if (currentProducts.length === 0 && fallbackProducts.length > 0) {
+                        currentProducts = fallbackProducts;
+                        const dataObject = {};
+                        fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
+                        await setDoc(prodRef, dataObject, { merge: true });
+                    }
                 }
-            } catch (e) {
-                console.error("Error al cargar:", e);
+            } catch (err) {
+                console.error("Error al cargar la tienda:", err);
                 currentProducts = fallbackProducts;
             }
             renderCategories();
             renderProducts();
         }
 
-        function applySettingsToUI() {
-            document.documentElement.style.setProperty('--color-primary', storeSettings.primaryColor);
-            document.getElementById('store-title-header').innerText = storeSettings.storeTitle;
-            document.getElementById('html-title').innerText = storeSettings.storeTitle + " - Catálogo Oficial";
-
-            const logoImg = document.getElementById('store-logo-img');
-            if (storeSettings.storeLogo && storeSettings.storeLogo.trim() !== "") {
-                logoImg.src = storeSettings.storeLogo;
-                logoImg.classList.remove('hidden');
-            } else {
-                logoImg.classList.add('hidden');
-            }
-
-            document.getElementById('settings-primary-color').value = storeSettings.primaryColor;
-            document.getElementById('settings-store-title').value = storeSettings.storeTitle;
-            document.getElementById('settings-store-logo').value = storeSettings.storeLogo || "";
-        }
-
-        window.switchTab = function(tab) {
-            if (tab === 'products') {
-                document.getElementById('tab-content-products').classList.remove('hidden');
-                document.getElementById('tab-content-products').classList.add('flex');
-                document.getElementById('tab-content-appearance').classList.remove('flex');
-                document.getElementById('tab-content-appearance').classList.add('hidden');
-                document.getElementById('tab-btn-products').className = "px-4 py-2 text-sm font-bold bg-custom-primary text-white rounded-lg";
-                document.getElementById('tab-btn-appearance').className = "px-4 py-2 text-sm font-bold bg-gray-200 text-gray-700 rounded-lg";
-            } else {
-                document.getElementById('tab-content-appearance').classList.remove('hidden');
-                document.getElementById('tab-content-appearance').classList.add('flex');
-                document.getElementById('tab-content-products').classList.remove('flex');
-                document.getElementById('tab-content-products').classList.add('hidden');
-                document.getElementById('tab-btn-appearance').className = "px-4 py-2 text-sm font-bold bg-custom-primary text-white rounded-lg";
-                document.getElementById('tab-btn-products').className = "px-4 py-2 text-sm font-bold bg-gray-200 text-gray-700 rounded-lg";
-            }
-        }
-
         window.renderCategories = function() {
-            const container = document.getElementById('category-filters');
-            const cats = ["Todos", ...new Set(currentProducts.map(p => p.cat))];
+            const container = document.getElementById('categories-container');
+            const cats = ['Todos', ...new Set(currentProducts.map(p => p.cat).filter(Boolean))];
             container.innerHTML = cats.map(cat => `
-                <button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-lg text-sm font-medium transition ${currentCategory === cat ? 'bg-custom-primary text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}">
+                <button onclick="filterByCategory('${cat}')" class="px-4 py-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition ${selectedCategory === cat ? 'bg-rose-900 text-white shadow' : 'bg-white border text-gray-600 hover:bg-gray-100'}">
                     ${cat}
                 </button>
             `).join('');
         }
 
-        window.setCategory = function(cat) { currentCategory = cat; currentPage = 1; renderProducts(); renderCategories(); }
-        window.filterProducts = function() { currentPage = 1; renderProducts(); }
+        window.filterByCategory = function(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            renderProducts();
+        }
+
+        window.filterProducts = function() {
+            renderProducts();
+        }
+
+        window.renderProducts = function() {
+            const grid = document.getElementById('products-grid');
+            const noProd = document.getElementById('no-products');
+            const query = document.getElementById('search-input').value.toLowerCase();
+
+            const filtered = currentProducts.filter(p => {
+                const matchesCat = selectedCategory === 'Todos' || p.cat === selectedCategory;
+                const matchesQuery = p.title.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query));
+                return matchesCat && matchesQuery;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = '';
+                noProd.classList.remove('hidden');
+                return;
+            }
+            noProd.classList.add('hidden');
+
+            grid.innerHTML = filtered.map(p => `
+                <div onclick="openProductDetail(${p.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border cursor-pointer flex flex-col">
+                    <img src="${p.img || 'https://via.placeholder.com/300'}" alt="${p.title}" class="w-full h-48 object-cover">
+                    <div class="p-4 flex flex-col flex-grow">
+                        <span class="text-xs text-rose-800 font-semibold uppercase">${p.cat}</span>
+                        <h3 class="font-bold text-gray-800 text-base mt-1 line-clamp-1">${p.title}</h3>
+                        <p class="text-rose-900 font-extrabold text-lg mt-auto pt-2">$${p.price}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
 
         window.openProductDetail = function(productId) {
             const p = currentProducts.find(item => item.id === productId);
             if (!p) return;
 
-            const imageList = (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 0) ? p.gallery : [p.img];
-            
+            let imageList = [];
+            if (p.img) imageList.push(p.img);
+            if (p.gallery && Array.isArray(p.gallery)) {
+                p.gallery.forEach(imgUrl => {
+                    if (imgUrl && !imageList.includes(imgUrl)) imageList.push(imgUrl);
+                });
+            }
+            if (imageList.length === 0) imageList = ['https://via.placeholder.com/400?text=Sin+Imagen'];
+
             document.getElementById('detail-main-img').src = imageList[0];
             document.getElementById('detail-product-cat').innerText = p.cat;
             document.getElementById('detail-product-title').innerText = p.title;
@@ -518,8 +464,8 @@
 
             const thumbsContainer = document.getElementById('detail-gallery-thumbs');
             if (imageList.length > 1) {
-                thumbsContainer.innerHTML = imageList.map((imgUrl, idx) => `
-                    <img src="${imgUrl}" onclick="document.getElementById('detail-main-img').src='${imgUrl}'" class="w-12 h-12 object-cover rounded-lg cursor-pointer border-2 hover:border-rose-900 transition">
+                thumbsContainer.innerHTML = imageList.map((imgUrl) => `
+                    <img src="${imgUrl}" onclick="document.getElementById('detail-main-img').src='${imgUrl}'" class="w-12 h-12 object-cover rounded-lg cursor-pointer border-2 hover:border-rose-900 transition flex-shrink-0">
                 `).join('');
                 thumbsContainer.classList.remove('hidden');
             } else {
@@ -530,132 +476,81 @@
             document.getElementById('product-detail-modal').classList.remove('hidden');
         }
 
-        window.closeProductDetailModal = function() {
+        window.closeProductDetail = function() {
             document.getElementById('product-detail-modal').classList.add('hidden');
         }
 
-        window.renderProducts = function() {
-            const searchVal = document.getElementById('search-input').value.toLowerCase();
-            const filtered = currentProducts.filter(p => {
-                const matchesCat = currentCategory === "Todos" || p.cat === currentCategory;
-                const matchesSearch = p.title.toLowerCase().includes(searchVal) || (p.desc && p.desc.toLowerCase().includes(searchVal));
-                return matchesCat && matchesSearch;
-            });
-
-            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
-            if (currentPage > totalPages) currentPage = totalPages;
-            
-            const start = (currentPage - 1) * itemsPerPage;
-            const paginatedItems = filtered.slice(start, start + itemsPerPage);
-
-            const grid = document.getElementById('products-grid');
-            if (paginatedItems.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No se encontraron productos.</div>`;
-            } else {
-                grid.innerHTML = paginatedItems.map(p => {
-                    const imageList = (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 0) ? p.gallery : [p.img];
-                    const mainImage = imageList[0];
-                    return `
-                        <div onclick="openProductDetail(${p.id})" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg cursor-pointer transition transform hover:-translate-y-1">
-                            <div class="h-48 bg-gray-100 overflow-hidden relative">
-                                <img src="${mainImage}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400?text=Sin+Imagen'">
-                                <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-full text-custom-primary">${p.cat}</span>
-                                ${imageList.length > 1 ? '<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full"><i class="fa-regular fa-images"></i> Vistas</span>' : ''}
-                            </div>
-                            <div class="p-4 flex flex-col flex-grow">
-                                <h3 class="font-bold text-gray-800 text-base mb-1">${p.title}</h3>
-                                <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-2">${p.desc || ''}</p>
-                                <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
-                                    <span class="text-lg font-bold text-custom-primary">$${p.price}</span>
-                                    <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">${p.status || 'Disponible'}</span>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-            renderPagination(totalPages);
+        window.openAdminModal = function() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+            document.getElementById('admin-pass-input').value = '';
+            document.getElementById('admin-login-section').classList.remove('hidden');
+            document.getElementById('admin-panel-content').classList.add('hidden');
+            document.getElementById('product-form-container').classList.add('hidden');
         }
 
-        window.renderPagination = function(totalPages) {
-            const container = document.getElementById('pagination-container');
-            if (totalPages <= 1) { container.innerHTML = ''; return; }
-            let html = `<button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-1 border rounded-lg"' : 'class="px-3 py-1 border rounded-lg hover:bg-gray-50"'}><i class="fa-solid fa-chevron-left"></i></button>`;
-            for (let i = 1; i <= totalPages; i++) {
-                html += `<button onclick="changePage(${i})" class="px-3.5 py-1 rounded-lg text-sm font-semibold transition ${currentPage === i ? 'bg-custom-primary text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50'}">${i}</button>`;
-            }
-            html += `<button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-1 border rounded-lg"' : 'class="px-3 py-1 border rounded-lg hover:bg-gray-50"'}><i class="fa-solid fa-chevron-right"></i></button>`;
-            container.innerHTML = html;
-        }
-
-        window.changePage = function(page) { currentPage = page; renderProducts(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-
-        window.openAdminModal = function() { document.getElementById('admin-modal').classList.remove('hidden'); }
-        window.closeAdminModal = function() { 
+        window.closeAdminModal = function() {
             document.getElementById('admin-modal').classList.add('hidden');
-            document.getElementById('admin-password').value = '';
-            document.getElementById('admin-login-view').classList.remove('hidden');
-            document.getElementById('admin-dashboard-view').classList.add('hidden');
-            document.getElementById('admin-dashboard-view').classList.remove('flex');
-            cancelProductForm();
         }
 
         window.verifyAdminPassword = function() {
-            const passInput = document.getElementById('admin-password').value;
-            const correctPass = storeSettings.adminPassword || "1234";
-            if (passInput === correctPass || passInput === "admin") {
-                document.getElementById('admin-login-view').classList.add('hidden');
-                document.getElementById('admin-dashboard-view').classList.remove('hidden');
-                document.getElementById('admin-dashboard-view').classList.add('flex');
-                switchTab('products');
+            const pass = document.getElementById('admin-pass-input').value;
+            if (pass === "1234") {
+                document.getElementById('admin-login-section').classList.add('hidden');
+                document.getElementById('admin-panel-content').classList.remove('hidden');
                 renderAdminProductsList();
-            } else { alert('Contraseña incorrecta'); }
+            } else {
+                alert("Contraseña incorrecta");
+            }
         }
 
         window.renderAdminProductsList = function() {
-            const container = document.getElementById('admin-products-list');
-            document.getElementById('admin-total-count').innerText = currentProducts.length;
-            container.innerHTML = currentProducts.map(p => `
-                <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-lg text-xs">
-                    <div class="flex items-center space-x-2 overflow-hidden">
-                        <img src="${p.img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="truncate"><p class="font-bold text-gray-800 truncate">${p.title}</p><p class="text-gray-500">${p.cat} - $${p.price}</p></div>
+            const list = document.getElementById('admin-products-list');
+            list.innerHTML = currentProducts.map(p => `
+                <div class="flex items-center justify-between p-2 bg-gray-50 rounded-xl border">
+                    <div class="flex items-center gap-3">
+                        <img src="${p.img}" class="w-10 h-10 object-cover rounded-lg">
+                        <div>
+                            <h5 class="font-bold text-sm text-gray-800">${p.title}</h5>
+                            <p class="text-xs text-gray-500">$${p.price} • ${p.cat}</p>
+                        </div>
                     </div>
-                    <div class="flex items-center space-x-1" onclick="event.stopPropagation()">
-                        <button onclick="editProduct(${p.id})" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteProduct(${p.id})" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
+                    <div class="flex gap-2">
+                        <button onclick="editProduct(${p.id})" class="px-2.5 py-1 bg-blue-50 text-blue-600 rounded-lg text-xs font-medium hover:bg-blue-100">Editar</button>
+                        <button onclick="deleteProduct(${p.id})" class="px-2.5 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100">Eliminar</button>
                     </div>
                 </div>
             `).join('');
         }
 
-        window.showAddProductForm = function() {
-            document.getElementById('form-title').innerText = "Nuevo Producto";
-            document.getElementById('form-id').value = "";
-            document.getElementById('form-title-input').value = "";
-            document.getElementById('form-cat-input').value = "";
-            document.getElementById('form-price-input').value = "";
-            document.getElementById('form-img-input').value = "";
-            document.getElementById('form-gallery-input').value = "";
-            document.getElementById('form-desc-input').value = "";
+        window.openProductForm = function() {
+            document.getElementById('form-id').value = '';
+            document.getElementById('form-title-input').value = '';
+            document.getElementById('form-cat-input').value = '';
+            document.getElementById('form-price-input').value = '';
+            document.getElementById('form-img-input').value = '';
+            document.getElementById('form-gallery-input').value = '';
+            document.getElementById('form-desc-input').value = '';
+            document.getElementById('form-action-title').innerText = "Nuevo Producto";
             document.getElementById('product-form-container').classList.remove('hidden');
         }
 
         window.editProduct = function(id) {
-            const p = currentProducts.find(item => item.id === id);
+            const p = currentProducts.find(item => item.id == id);
             if (!p) return;
-            document.getElementById('form-title').innerText = "Editar Producto #" + id;
             document.getElementById('form-id').value = p.id;
             document.getElementById('form-title-input').value = p.title;
             document.getElementById('form-cat-input').value = p.cat;
             document.getElementById('form-price-input').value = p.price;
-            document.getElementById('form-img-input').value = p.img;
-            document.getElementById('form-gallery-input').value = p.gallery ? p.gallery.join(', ') : "";
-            document.getElementById('form-desc-input').value = p.desc || "";
+            document.getElementById('form-img-input').value = p.img || '';
+            document.getElementById('form-gallery-input').value = p.gallery ? p.gallery.join(', ') : '';
+            document.getElementById('form-desc-input').value = p.desc || '';
+            document.getElementById('form-action-title').innerText = "Editar Producto";
             document.getElementById('product-form-container').classList.remove('hidden');
         }
 
-        window.cancelProductForm = function() { document.getElementById('product-form-container').classList.add('hidden'); }
+        window.cancelProductForm = function() {
+            document.getElementById('product-form-container').classList.add('hidden');
+        }
 
         window.saveProductToCloud = async function() {
             const id = document.getElementById('form-id').value;
@@ -672,62 +567,47 @@
             if (galleryRaw) {
                 gallery = galleryRaw.split(',').map(s => s.trim()).filter(s => s.length > 0);
             }
-            if (gallery.length === 0 && img) gallery = [img];
+            
+            if (img && !gallery.includes(img)) {
+                gallery.unshift(img);
+            } else if (gallery.length === 0 && img) {
+                gallery = [img];
+            }
+
+            const mainImg = img || (gallery.length > 0 ? gallery[0] : 'https://via.placeholder.com/400?text=Sin+Imagen');
 
             if (id) {
                 const index = currentProducts.findIndex(p => p.id == id);
-                if (index !== -1) currentProducts[index] = { ...currentProducts[index], title, cat, price, img, gallery, desc };
+                if (index !== -1) currentProducts[index] = { ...currentProducts[index], title, cat, price, img: mainImg, gallery, desc };
             } else {
                 const newId = currentProducts.length > 0 ? Math.max(...currentProducts.map(p => Number(p.id) || 0)) + 1 : 1;
-                currentProducts.unshift({ id: newId, title, cat, price, img, gallery, desc, status: "Disponible" });
+                currentProducts.unshift({ id: newId, title, cat, price, img: mainImg, gallery, desc, status: "Disponible" });
             }
 
             try {
                 const dataObject = {};
                 currentProducts.forEach((p, idx) => { dataObject[idx] = p; });
                 await setDoc(doc(db, "store_data", "products_list"), dataObject, { merge: true });
-                alert('¡Guardado en la nube con éxito!');
+                alert('¡Producto guardado y sincronizado en la nube con éxito!');
                 cancelProductForm();
                 renderCategories();
                 renderProducts();
                 renderAdminProductsList();
-            } catch (err) { alert('Error: ' + err.message); }
+            } catch (err) { alert('Error al guardar producto: ' + err.message); }
         }
 
         window.deleteProduct = async function(id) {
-            if (confirm('¿Eliminar producto?')) {
-                currentProducts = currentProducts.filter(p => p.id !== id);
-                try {
-                    const dataObject = {};
-                    currentProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                    await setDoc(doc(db, "store_data", "products_list"), dataObject, { merge: true });
-                    renderCategories();
-                    renderProducts();
-                    renderAdminProductsList();
-                } catch (err) { alert('Error: ' + err.message); }
-            }
-        }
-
-        window.saveSettingsToCloud = async function() {
-            const newColor = document.getElementById('settings-primary-color').value;
-            const newTitle = document.getElementById('settings-store-title').value.trim();
-            const newLogo = document.getElementById('settings-store-logo').value.trim();
-            const newPass = document.getElementById('settings-new-password').value.trim();
-
-            storeSettings.primaryColor = newColor;
-            storeSettings.storeTitle = newTitle || "Joliee Store";
-            storeSettings.storeLogo = newLogo;
-            if (newPass) {
-                storeSettings.adminPassword = newPass;
-            }
-
+            if (!confirm('¿Estás seguro de eliminar este producto?')) return;
+            currentProducts = currentProducts.filter(p => p.id != id);
             try {
-                await setDoc(doc(db, "store_data", "settings"), storeSettings, { merge: true });
-                applySettingsToUI();
-                alert('¡Ajustes guardados en la nube con éxito!');
-            } catch (err) {
-                alert('Error: ' + err.message);
-            }
+                const dataObject = {};
+                currentProducts.forEach((p, idx) => { dataObject[idx] = p; });
+                await setDoc(doc(db, "store_data", "products_list"), dataObject, { merge: false });
+                renderCategories();
+                renderProducts();
+                renderAdminProductsList();
+                alert('Producto eliminado correctamente.');
+            } catch (err) { alert('Error al eliminar: ' + err.message); }
         }
 
         loadStoreData();
