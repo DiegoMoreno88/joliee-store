@@ -13,7 +13,7 @@
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <!-- Imagen de la tienda más grande (w-14 h-14) -->
+                <!-- LOGOTIPO MÁS GRANDE (w-14 h-14) -->
                 <img id="store-logo-img" src="" alt="Logo" class="w-14 h-14 object-cover rounded-full hidden shadow-sm border">
                 <div>
                     <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
@@ -49,9 +49,9 @@
             No se encontraron productos.
         </div>
 
-        <!-- Paginación numérica (Pie de página) -->
+        <!-- PAGINACIÓN NUMÉRICA (1, 2, 3, 4, 5...) -->
         <div id="pagination-container" class="flex justify-center items-center gap-2 mt-10 pb-6">
-            <!-- Botones 1, 2, 3, 4, 5... dinámicos -->
+            <!-- Botones numéricos dinámicos -->
         </div>
     </main>
 
@@ -483,13 +483,13 @@
 
         window.filterByCategory = function(cat) {
             selectedCategory = cat;
-            currentPage = 1; // Reiniciar a la página 1 al cambiar de categoría
+            currentPage = 1;
             renderCategories();
             renderProducts();
         }
 
         window.filterProducts = function() {
-            currentPage = 1; // Reiniciar a la página 1 al buscar
+            currentPage = 1;
             renderProducts();
         }
 
@@ -513,7 +513,6 @@
             }
             noProd.classList.add('hidden');
 
-            // Paginación lógica
             const totalPages = Math.ceil(filtered.length / itemsPerPage);
             if (currentPage > totalPages) currentPage = totalPages;
             
@@ -531,7 +530,7 @@
                 </div>
             `).join('');
 
-            // Renderizar botones numéricos (1, 2, 3, 4, 5...)
+            // Renderizar paginación numérica (1, 2, 3, 4, 5...)
             if (totalPages > 1) {
                 let pagesHtml = '';
                 for (let i = 1; i <= totalPages; i++) {
