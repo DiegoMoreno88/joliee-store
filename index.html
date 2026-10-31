@@ -51,24 +51,31 @@
         </div>
     </main>
 
-    <!-- Modal de Administración -->
+    <!-- Modal de Administración Protegido por Contraseña -->
     <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4">
         <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
             <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
+            
+            <!-- Vista de Login -->
             <div id="admin-login-view">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Acceso de Administrador</h3>
-                <p class="text-sm text-gray-600 mb-4">Ingresa la contraseña para gestionar el catálogo y la base de datos.</p>
-                <input type="password" id="admin-password" placeholder="Contraseña" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
+                <p class="text-sm text-gray-600 mb-4">Ingresa la contraseña para acceder al panel de control de la tienda.</p>
+                <input type="password" id="admin-password" placeholder="Contraseña (ej. 1234)" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
                 <button onclick="verifyAdminPassword()" class="w-full bg-rose-900 text-white py-2 rounded-lg hover:bg-rose-800 transition">Entrar</button>
             </div>
+
+            <!-- Vista del Panel de Control una vez autenticado -->
             <div id="admin-dashboard-view" class="hidden">
                 <h3 class="text-xl font-bold text-rose-900 mb-2">Panel de Control</h3>
-                <p class="text-sm text-gray-600 mb-6">Gestión activa de la tienda y sincronización con Firebase.</p>
+                <p class="text-sm text-gray-600 mb-6">Gestión activa de la tienda en modo local directo.</p>
                 <div class="space-y-3">
-                    <button onclick="syncToFirebaseManual()" class="w-full bg-emerald-700 text-white py-2 rounded-lg hover:bg-emerald-600 transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Forzar Sincronización de Productos
+                    <div class="p-3 bg-rose-50 border border-rose-100 rounded-lg text-sm text-rose-900">
+                        <i class="fa-solid fa-circle-check"></i> Modo de tienda optimizado y activo. Los cambios en el código se reflejan de inmediato al compartirlos.
+                    </div>
+                    <button onclick="alert('Para añadir o editar productos masivamente, actualiza tu lista en el código fuente de GitHub.')" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
+                        <i class="fa-solid fa-box-archive"></i> Información de Inventario
                     </button>
                 </div>
             </div>
@@ -80,26 +87,10 @@
         <p>&copy; 2026 Joliee Store. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Lógica de la Tienda y Firebase -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyD-Placeholder-Configuracion-Segura",
-            authDomain: "jolieestore.firebaseapp.com",
-            projectId: "jolieestore",
-            storageBucket: "jolieestore.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456:web:abcde"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
+    <!-- Lógica Completa de la Tienda -->
+    <script>
         // ==========================================
-        // PEGA AQUÍ ABAJO TUS 220 PRODUCTOS EXACTOS:
-        // let initialProducts = [ ... ];
+        // PEGA AQUÍ TU LISTA DE 220 PRODUCTOS
         // ==========================================
         let initialProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
@@ -323,36 +314,19 @@
   { id: 219, title: "Primer de Ojos Anti-pliegues", cat: "Primers y Selladores", price: "7.50", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", visibility: "Mostrar", desc: "Garantiza que tus sombras permanezcan intactas todo el día." },
   { id: 220, title: "Estuche Neceser Organizador Grande de Viaje", cat: "Accesorios y Brochas", price: "15.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", visibility: "Mostrar", desc: "Gran capacidad y múltiples compartimentos para tu maquillaje." }
 ];
+
         let currentProducts = [];
         let currentCategory = "Todos";
         let currentPage = 1;
-        const itemsPerPage = 24; // Bloques exactos de 24 productos por página
+        const itemsPerPage = 24; // Exactamente 24 productos por página
 
-        window.loadStoreData = async function() {
-            try {
-                const querySnapshot = await getDocs(collection(db, "products"));
-                if (!querySnapshot.empty) {
-                    currentProducts = [];
-                    querySnapshot.forEach((doc) => {
-                        currentProducts.push(doc.data());
-                    });
-                } else if (initialProducts.length > 0) {
-                    currentProducts = initialProducts;
-                    for (let p of initialProducts) {
-                        await setDoc(doc(db, "products", String(p.id)), p);
-                    }
-                } else {
-                    currentProducts = [];
-                }
-            } catch (e) {
-                console.warn("Usando respaldo local:", e);
-                currentProducts = initialProducts;
-            }
+        function loadStoreData() {
+            currentProducts = initialProducts;
             renderCategories();
             renderProducts();
         }
 
-        window.renderCategories = function() {
+        function renderCategories() {
             const categoriesContainer = document.getElementById('category-filters');
             const cats = ["Todos", ...new Set(currentProducts.map(p => p.cat))];
             categoriesContainer.innerHTML = cats.map(cat => `
@@ -362,23 +336,23 @@
             `).join('');
         }
 
-        window.setCategory = function(cat) {
+        function setCategory(cat) {
             currentCategory = cat;
             currentPage = 1;
             renderProducts();
             renderCategories();
         }
 
-        window.filterProducts = function() {
+        function filterProducts() {
             currentPage = 1;
             renderProducts();
         }
 
-        window.renderProducts = function() {
+        function renderProducts() {
             const searchVal = document.getElementById('search-input').value.toLowerCase();
             const filtered = currentProducts.filter(p => {
                 const matchesCat = currentCategory === "Todos" || p.cat === currentCategory;
-                const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+                const matchesSearch = p.title.toLowerCase().includes(searchVal) || (p.desc && p.desc.toLowerCase().includes(searchVal));
                 const isVisible = p.visibility !== "Ocultar";
                 return matchesCat && matchesSearch && isVisible;
             });
@@ -396,7 +370,7 @@
                 grid.innerHTML = paginatedItems.map(p => `
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
                         <div class="h-48 bg-gray-100 overflow-hidden relative">
-                            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover">
+                            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400?text=Sin+Imagen'">
                             <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-full text-rose-900">${p.cat}</span>
                         </div>
                         <div class="p-4 flex flex-col flex-grow">
@@ -414,7 +388,7 @@
             renderPagination(totalPages);
         }
 
-        window.renderPagination = function(totalPages) {
+        function renderPagination(totalPages) {
             const container = document.getElementById('pagination-container');
             if (totalPages <= 1) {
                 container.innerHTML = '';
@@ -444,22 +418,25 @@
             container.innerHTML = html;
         }
 
-        window.changePage = function(page) {
+        function changePage(page) {
             currentPage = page;
             renderProducts();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        window.openAdminModal = function() {
+        // Funciones del Panel de Administración
+        function openAdminModal() {
             document.getElementById('admin-modal').classList.remove('hidden');
         }
 
-        window.closeAdminModal = function() {
+        function closeAdminModal() {
             document.getElementById('admin-modal').classList.add('hidden');
             document.getElementById('admin-password').value = '';
+            document.getElementById('admin-login-view').classList.remove('hidden');
+            document.getElementById('admin-dashboard-view').classList.add('hidden');
         }
 
-        window.verifyAdminPassword = function() {
+        function verifyAdminPassword() {
             const pass = document.getElementById('admin-password').value;
             if (pass === "1234" || pass === "admin") {
                 document.getElementById('admin-login-view').classList.add('hidden');
@@ -469,19 +446,8 @@
             }
         }
 
-        window.syncToFirebaseManual = async function() {
-            try {
-                for (let p of currentProducts) {
-                    await setDoc(doc(db, "products", String(p.id)), p);
-                }
-                alert('¡Sincronización con Firebase completada con éxito!');
-                loadStoreData();
-            } catch (err) {
-                alert('Error al sincronizar: ' + err.message);
-            }
-        }
-
-        loadStoreData();
+        // Inicializar tienda al cargar la página
+        window.onload = loadStoreData;
     </script>
 </body>
 </html>
