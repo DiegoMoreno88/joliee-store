@@ -9,7 +9,7 @@
 </head>
 <body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-    <!-- Encabezado de la Tienda -->
+    <!-- Encabezado -->
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div>
@@ -34,49 +34,71 @@
                 <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por producto..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-900">
             </div>
             <div id="category-filters" class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
-                <!-- Las categorías se cargan dinámicamente -->
             </div>
         </div>
     </div>
 
-    <!-- Contenido Principal / Catálogo -->
+    <!-- Catálogo -->
     <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
         <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Los productos se renderizan aquí -->
         </div>
 
-        <!-- Controles de Paginación -->
+        <!-- Paginación -->
         <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-10">
-            <!-- Botones de paginación dinámicos -->
         </div>
     </main>
 
-    <!-- Modal de Administración Protegido por Contraseña -->
-    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4">
-        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+    <!-- Modal de Administración Interactiva -->
+    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4 overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 relative max-h-[90vh] flex flex-col">
             <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <i class="fa-solid fa-xmark text-xl"></i>
             </button>
             
-            <!-- Vista de Login -->
+            <!-- Login -->
             <div id="admin-login-view">
                 <h3 class="text-xl font-bold text-gray-800 mb-4">Acceso de Administrador</h3>
-                <p class="text-sm text-gray-600 mb-4">Ingresa la contraseña para acceder al panel de control de la tienda.</p>
-                <input type="password" id="admin-password" placeholder="Contraseña (ej. 1234)" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
+                <p class="text-sm text-gray-600 mb-4">Ingresa la contraseña para gestionar productos e imágenes.</p>
+                <input type="password" id="admin-password" placeholder="Contraseña (1234)" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
                 <button onclick="verifyAdminPassword()" class="w-full bg-rose-900 text-white py-2 rounded-lg hover:bg-rose-800 transition">Entrar</button>
             </div>
 
-            <!-- Vista del Panel de Control una vez autenticado -->
-            <div id="admin-dashboard-view" class="hidden">
-                <h3 class="text-xl font-bold text-rose-900 mb-2">Panel de Control</h3>
-                <p class="text-sm text-gray-600 mb-6">Gestión activa de la tienda en modo local directo.</p>
-                <div class="space-y-3">
-                    <div class="p-3 bg-rose-50 border border-rose-100 rounded-lg text-sm text-rose-900">
-                        <i class="fa-solid fa-circle-check"></i> Modo de tienda optimizado y activo. Los cambios en el código se reflejan de inmediato al compartirlos.
-                    </div>
-                    <button onclick="alert('Para añadir o editar productos masivamente, actualiza tu lista en el código fuente de GitHub.')" class="w-full bg-gray-100 text-gray-700 py-2 rounded-lg hover:bg-gray-200 transition text-sm font-medium">
-                        <i class="fa-solid fa-box-archive"></i> Información de Inventario
+            <!-- Panel de Edición Activo -->
+            <div id="admin-dashboard-view" class="hidden flex-col h-full overflow-hidden">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                    <h3 class="text-xl font-bold text-rose-900">Gestión de Productos</h3>
+                    <button onclick="showAddProductForm()" class="bg-emerald-700 text-white text-xs px-3 py-1.5 rounded-lg hover:bg-emerald-600 transition flex items-center gap-1">
+                        <i class="fa-solid fa-plus"></i> Nuevo Producto
                     </button>
+                </div>
+
+                <!-- Formulario de Agregar / Editar -->
+                <div id="product-form-container" class="hidden mb-4 p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                    <h4 id="form-title" class="font-bold text-sm text-gray-700 mb-2">Editar Producto</h4>
+                    <input type="hidden" id="form-id">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-2">
+                        <input type="text" id="form-title-input" placeholder="Nombre del producto" class="px-3 py-1.5 border rounded text-sm">
+                        <input type="text" id="form-cat-input" placeholder="Categoría" class="px-3 py-1.5 border rounded text-sm">
+                        <input type="text" id="form-price-input" placeholder="Precio ($)" class="px-3 py-1.5 border rounded text-sm">
+                        <input type="text" id="form-img-input" placeholder="URL Enlace Directo ImgBB (.jpg/.png)" class="px-3 py-1.5 border rounded text-sm">
+                    </div>
+                    <textarea id="form-desc-input" placeholder="Descripción corta" class="w-full px-3 py-1.5 border rounded text-sm mb-2" rows="2"></textarea>
+                    <div class="flex justify-end space-x-2">
+                        <button onclick="cancelProductForm()" class="px-3 py-1 bg-gray-200 text-gray-700 text-xs rounded hover:bg-gray-300">Cancelar</button>
+                        <button onclick="saveProductForm()" class="px-3 py-1 bg-rose-900 text-white text-xs rounded hover:bg-rose-800">Guardar Cambios</button>
+                    </div>
+                </div>
+
+                <!-- Lista editable de productos -->
+                <div class="overflow-y-auto flex-grow max-h-[50vh] space-y-2 pr-1">
+                    <div id="admin-products-list">
+                        <!-- Productos generados con botones de edición -->
+                    </div>
+                </div>
+                
+                <div class="mt-4 pt-3 border-t flex justify-between items-center text-xs text-gray-500">
+                    <span>Total en inventario: <strong id="admin-total-count">0</strong></span>
+                    <button onclick="resetToInitialProducts()" class="text-rose-700 hover:underline">Restablecer datos originales</button>
                 </div>
             </div>
         </div>
@@ -87,10 +109,10 @@
         <p>&copy; 2026 Joliee Store. Todos los derechos reservados.</p>
     </footer>
 
-    <!-- Lógica Completa de la Tienda -->
+    <!-- Lógica de Control -->
     <script>
         // ==========================================
-        // PEGA AQUÍ TU LISTA DE 220 PRODUCTOS
+        // LISTA DE RESPALDO (PEGA TU BLOQUE DE 220 PRODUCTOS AQUÍ)
         // ==========================================
         let initialProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
@@ -318,12 +340,26 @@
         let currentProducts = [];
         let currentCategory = "Todos";
         let currentPage = 1;
-        const itemsPerPage = 24; // Exactamente 24 productos por página
+        const itemsPerPage = 24;
 
         function loadStoreData() {
-            currentProducts = initialProducts;
+            const savedData = localStorage.getItem('joliee_store_products');
+            if (savedData) {
+                try {
+                    currentProducts = JSON.parse(savedData);
+                } catch(e) {
+                    currentProducts = initialProducts;
+                }
+            } else {
+                currentProducts = initialProducts;
+                saveToLocalStorage();
+            }
             renderCategories();
             renderProducts();
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('joliee_store_products', JSON.stringify(currentProducts));
         }
 
         function renderCategories() {
@@ -375,10 +411,10 @@
                         </div>
                         <div class="p-4 flex flex-col flex-grow">
                             <h3 class="font-bold text-gray-800 text-base mb-1">${p.title}</h3>
-                            <p class="text-sm text-gray-500 mb-4 flex-grow">${p.desc}</p>
+                            <p class="text-sm text-gray-500 mb-4 flex-grow">${p.desc || ''}</p>
                             <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
                                 <span class="text-lg font-bold text-rose-900">$${p.price}</span>
-                                <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">${p.status}</span>
+                                <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">${p.status || 'Disponible'}</span>
                             </div>
                         </div>
                     </div>
@@ -424,7 +460,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // Funciones del Panel de Administración
+        // --- FUNCIONALIDADES DE EDICIÓN DEL PANEL ---
         function openAdminModal() {
             document.getElementById('admin-modal').classList.remove('hidden');
         }
@@ -434,6 +470,7 @@
             document.getElementById('admin-password').value = '';
             document.getElementById('admin-login-view').classList.remove('hidden');
             document.getElementById('admin-dashboard-view').classList.add('hidden');
+            document.getElementById('admin-dashboard-view').classList.remove('flex');
         }
 
         function verifyAdminPassword() {
@@ -441,12 +478,118 @@
             if (pass === "1234" || pass === "admin") {
                 document.getElementById('admin-login-view').classList.add('hidden');
                 document.getElementById('admin-dashboard-view').classList.remove('hidden');
+                document.getElementById('admin-dashboard-view').classList.add('flex');
+                renderAdminProductsList();
             } else {
                 alert('Contraseña incorrecta');
             }
         }
 
-        // Inicializar tienda al cargar la página
+        function renderAdminProductsList() {
+            const container = document.getElementById('admin-products-list');
+            document.getElementById('admin-total-count').innerText = currentProducts.length;
+            
+            container.innerHTML = currentProducts.map(p => `
+                <div class="flex items-center justify-between p-2 bg-white border border-gray-200 rounded-lg text-sm hover:border-rose-300">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <img src="${p.img}" class="w-10 h-10 object-cover rounded" onerror="this.src='https://via.placeholder.com/50'">
+                        <div class="truncate">
+                            <p class="font-bold text-gray-800 truncate">${p.title}</p>
+                            <p class="text-xs text-gray-500">${p.cat} - $${p.price}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="editProduct(${p.id})" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Editar">
+                            <i class="fa-solid fa-pen-to-square"></i>
+                        </button>
+                        <button onclick="deleteProduct(${p.id})" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded" title="Eliminar">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function showAddProductForm() {
+            document.getElementById('form-title').innerText = "Nuevo Producto";
+            document.getElementById('form-id').value = "";
+            document.getElementById('form-title-input').value = "";
+            document.getElementById('form-cat-input').value = "";
+            document.getElementById('form-price-input').value = "";
+            document.getElementById('form-img-input').value = "";
+            document.getElementById('form-desc-input').value = "";
+            document.getElementById('product-form-container').classList.remove('hidden');
+        }
+
+        function editProduct(id) {
+            const p = currentProducts.find(item => item.id === id);
+            if (!p) return;
+            document.getElementById('form-title').innerText = "Editar Producto #" + id;
+            document.getElementById('form-id').value = p.id;
+            document.getElementById('form-title-input').value = p.title;
+            document.getElementById('form-cat-input').value = p.cat;
+            document.getElementById('form-price-input').value = p.price;
+            document.getElementById('form-img-input').value = p.img;
+            document.getElementById('form-desc-input').value = p.desc || "";
+            document.getElementById('product-form-container').classList.remove('hidden');
+        }
+
+        function cancelProductForm() {
+            document.getElementById('product-form-container').classList.add('hidden');
+        }
+
+        function saveProductForm() {
+            const id = document.getElementById('form-id').value;
+            const title = document.getElementById('form-title-input').value.trim();
+            const cat = document.getElementById('form-cat-input').value.trim();
+            const price = document.getElementById('form-price-input').value.trim();
+            const img = document.getElementById('form-img-input').value.trim();
+            const desc = document.getElementById('form-desc-input').value.trim();
+
+            if (!title || !price || !cat) {
+                alert('Por favor completa al menos el nombre, categoría y precio.');
+                return;
+            }
+
+            if (id) {
+                // Actualizar existente
+                const index = currentProducts.findIndex(p => p.id == id);
+                if (index !== -1) {
+                    currentProducts[index] = { ...currentProducts[index], title, cat, price, img, desc };
+                }
+            } else {
+                // Crear nuevo
+                const newId = currentProducts.length > 0 ? Math.max(...currentProducts.map(p => p.id)) + 1 : 1;
+                currentProducts.unshift({ id: newId, title, cat, price, img, desc, status: "Disponible" });
+            }
+
+            saveToLocalStorage();
+            renderCategories();
+            renderProducts();
+            renderAdminProductsList();
+            cancelProductForm();
+        }
+
+        function deleteProduct(id) {
+            if (confirm('¿Estás seguro de eliminar este producto?')) {
+                currentProducts = currentProducts.filter(p => p.id !== id);
+                saveToLocalStorage();
+                renderCategories();
+                renderProducts();
+                renderAdminProductsList();
+            }
+        }
+
+        function resetToInitialProducts() {
+            if (confirm('¿Deseas restablecer el catálogo a la lista original de 220 productos del archivo?')) {
+                currentProducts = [...initialProducts];
+                saveToLocalStorage();
+                renderCategories();
+                renderProducts();
+                renderAdminProductsList();
+            }
+        }
+
         window.onload = loadStoreData;
     </script>
 </body>
