@@ -1,215 +1,107 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title id="page-title">Joliee Store - Catálogo Oficial</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <!-- SDK de Firebase (Modular vía CDN) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, getDocs, setDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyBKoL_N6-BfqP-MB7KydSVlE5Ey3w6f6P7E",
-      authDomain: "joliee-store.firebaseapp.com",
-      projectId: "joliee-store",
-      storageBucket: "joliee-store.firebasestorage.app",
-      messagingSenderId: "1043661690772",
-      appId: "1:1043661690772:web:4d728e1546e755b0fbe181"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    window.db = db;
-    window.collection = collection;
-    window.getDocs = getDocs;
-    window.setDoc = setDoc;
-    window.doc = doc;
-    window.deleteDoc = deleteDoc;
-
-    if(window.initStoreApp) { window.initStoreApp(); }
-  </script>
-
-  <style>
-    :root {
-      --primary: #800020;
-      --bg: #f8f6f6;
-      --surface: #ffffff;
-      --text: #2b2b2b;
-      --text-muted: #666666;
-      --border: #e8e3e3;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-    body { background-color: var(--bg); color: var(--text); padding-bottom: 60px; }
-    
-    header { background: var(--surface); padding: 15px 25px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; position: relative; }
-    .header-brand { display: flex; align-items: center; gap: 15px; }
-    .logo-img { height: 75px; width: 75px; border-radius: 12px; object-fit: cover; display: none; border: 1px solid var(--border); background: #fff; }
-    .store-info { display: flex; flex-direction: column; }
-    .store-name { font-size: 24px; font-weight: 700; color: var(--primary); line-height: 1.2; }
-    .store-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-
-    .admin-btn { background: var(--surface); border: 1px solid var(--border); border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 20px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); }
-
-    .container { max-width: 1000px; margin: 0 auto; padding: 20px 15px; }
-    .search-box { width: 100%; padding: 12px 18px; border-radius: 25px; border: 1px solid var(--border); font-size: 15px; outline: none; margin-bottom: 15px; background: var(--surface); color: var(--text); }
-    .categories-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 20px; scrollbar-width: none; }
-    .cat-chip { padding: 8px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; font-size: 14px; cursor: pointer; white-space: nowrap; font-weight: 500; color: var(--text); }
-    .cat-chip.active { background: var(--primary); color: white; border-color: var(--primary); }
-    
-    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 15px; }
-    .card { background: var(--surface); border-radius: 12px; border: 1px solid var(--border); overflow: hidden; display: flex; flex-direction: column; position: relative; cursor: pointer; transition: transform 0.2s ease; }
-    .card:hover { transform: translateY(-3px); box-shadow: 0 6px 15px rgba(0,0,0,0.08); }
-    .card-img-container { position: relative; width: 100%; height: 210px; background: #eee; }
-    .card-img { width: 100%; height: 100%; object-fit: cover; }
-    
-    .badge-status { position: absolute; top: 8px; left: 8px; padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: 700; text-transform: uppercase; z-index: 2; }
-    .badge-available { background: #25d366; color: white; }
-    .badge-soldout { background: #ff4d4d; color: white; }
-    
-    .card-content { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
-    .card-cat { font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-    .card-title { font-size: 15px; font-weight: 600; margin-bottom: 6px; line-height: 1.3; color: var(--text); }
-    .card-price { font-size: 18px; font-weight: 700; color: var(--primary); }
-    
-    .btn-ws { background: #25d366; color: white; text-decoration: none; padding: 12px; border-radius: 8px; text-align: center; font-weight: 600; font-size: 15px; display: block; width: 100%; border: none; cursor: pointer; }
-    .btn-ws.disabled { background: #ccc; pointer-events: none; }
-
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; align-items: center; justify-content: center; padding: 15px; }
-    .modal-content { background: var(--surface); color: var(--text); width: 100%; max-width: 580px; max-height: 90vh; border-radius: 16px; overflow-y: auto; padding: 25px; position: relative; border: 1px solid var(--border); }
-    .close-btn { position: absolute; right: 20px; top: 20px; font-size: 26px; border: none; background: none; cursor: pointer; color: var(--text-muted); z-index: 10; }
-    
-    .detail-img-box { position: relative; width: 100%; background: #f0f0f0; border-radius: 12px; overflow: hidden; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; }
-    .detail-img { width: 100%; max-height: 340px; object-fit: contain; display: block; margin: 0 auto; }
-    
-    .detail-thumbs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 15px; }
-    .thumb-img { width: 55px; height: 55px; border-radius: 8px; object-fit: cover; border: 2px solid var(--border); cursor: pointer; opacity: 0.7; transition: all 0.2s; }
-    .thumb-img.active { border-color: var(--primary); opacity: 1; transform: scale(1.05); }
-
-    .detail-cat { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; }
-    .detail-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; color: var(--text); }
-    .detail-price { font-size: 24px; font-weight: 700; color: var(--primary); margin-bottom: 12px; }
-    .detail-desc-box { background: var(--bg); padding: 12px; border-radius: 8px; font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px; border: 1px solid var(--border); }
-
-    .admin-form-group { margin-bottom: 14px; }
-    .admin-form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; }
-    .admin-input, .admin-select, .admin-textarea { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; outline: none; }
-    .admin-btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; width: 100%; cursor: pointer; font-size: 15px; margin-top: 10px; }
-    .admin-btn-danger { background: #ff4d4d; color: white; border: none; padding: 8px 12px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 13px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joliee Store - Catálogo Oficial</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
 
-  <header>
-    <div class="header-brand">
-      <img id="store-logo" class="logo-img" src="" alt="Logo">
-      <div class="store-info">
-        <div id="display-title" class="store-name">Joliee Store</div>
-        <div id="display-sub" class="store-sub">Catálogo Oficial</div>
-      </div>
+    <!-- Encabezado de la Tienda -->
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div>
+                <h1 id="store-title" class="text-2xl font-bold text-rose-900">Joliee Store</h1>
+                <p id="store-subtitle" class="text-sm text-gray-500">Catálogo Oficial</p>
+            </div>
+            <div class="flex items-center space-x-3">
+                <button onclick="openAdminModal()" class="p-2 text-gray-600 hover:text-rose-900 transition" title="Panel de Administración">
+                    <i class="fa-solid fa-gear text-xl"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Barra de Búsqueda y Filtros -->
+    <div class="max-w-7xl mx-auto px-4 mt-6 w-full">
+        <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+            <div class="relative w-full md:w-96">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="search-input" oninput="filterProducts()" placeholder="Buscar por producto..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-900">
+            </div>
+            <div id="category-filters" class="flex flex-wrap gap-2 w-full md:w-auto justify-start md:justify-end">
+                <!-- Las categorías se cargan dinámicamente -->
+            </div>
+        </div>
     </div>
-    <button class="admin-btn" onclick="requestAdminAccess()" title="Acceso Administrador">⚙️</button>
-  </header>
 
-  <div class="container">
-    <input type="text" id="search-input" class="search-box" placeholder="Buscar por producto..." oninput="onSearchOrCatChange()">
-    <div class="categories-bar" id="cat-chips"></div>
-    <div class="products-grid" id="catalog-grid"></div>
-  </div>
+    <!-- Contenido Principal / Catálogo -->
+    <main class="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            <!-- Los productos se renderizan aquí -->
+        </div>
 
-  <!-- Modal Detalle del Producto -->
-  <div class="modal" id="product-detail-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeProductDetail()">&times;</button>
-      <div class="detail-img-box">
-        <div id="detail-badge" style="position:absolute; top:10px; left:10px; z-index:5;"></div>
-        <img id="detail-img" class="detail-img" src="" alt="Producto">
-      </div>
-      <div id="detail-thumbs" class="detail-thumbs"></div>
-      <div id="detail-cat" class="detail-cat"></div>
-      <h2 id="detail-title" class="detail-title"></h2>
-      <div id="detail-price" class="detail-price"></div>
-      <div style="font-size: 13px; font-weight: 600; margin-bottom: 6px;">Descripción:</div>
-      <div id="detail-desc" class="detail-desc-box"></div>
-      <a id="detail-ws-btn" href="#" class="btn-ws" target="_blank">Pedir por WhatsApp</a>
+        <!-- Controles de Paginación -->
+        <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-10">
+            <!-- Botones de paginación dinámicos -->
+        </div>
+    </main>
+
+    <!-- Modal de Administración -->
+    <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-md w-full p-6 relative">
+            <button onclick="closeAdminModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <i class="fa-solid fa-xmark text-xl"></i>
+            </button>
+            <div id="admin-login-view">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Acceso de Administrador</h3>
+                <p class="text-sm text-gray-600 mb-4">Ingresa la contraseña para gestionar el catálogo y la base de datos.</p>
+                <input type="password" id="admin-password" placeholder="Contraseña" class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4 focus:outline-none focus:ring-2 focus:ring-rose-900">
+                <button onclick="verifyAdminPassword()" class="w-full bg-rose-900 text-white py-2 rounded-lg hover:bg-rose-800 transition">Entrar</button>
+            </div>
+            <div id="admin-dashboard-view" class="hidden">
+                <h3 class="text-xl font-bold text-rose-900 mb-2">Panel de Control</h3>
+                <p class="text-sm text-gray-600 mb-6">Gestión activa de la tienda y sincronización con Firebase.</p>
+                <div class="space-y-3">
+                    <button onclick="syncToFirebaseManual()" class="w-full bg-emerald-700 text-white py-2 rounded-lg hover:bg-emerald-600 transition flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Forzar Sincronización de Productos
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Modal Clave -->
-  <div class="modal" id="auth-modal">
-    <div class="modal-content" style="max-width: 400px;">
-      <button class="close-btn" onclick="closeAuthModal()">&times;</button>
-      <h2 style="margin-bottom: 15px; font-size: 18px; color: var(--primary);">Acceso Administrativo</h2>
-      <div class="admin-form-group">
-        <label>Introduce la Contraseña:</label>
-        <input type="password" id="auth-password-input" class="admin-input" placeholder="Clave de acceso">
-      </div>
-      <button class="admin-btn-primary" onclick="verifyPassword()">Ingresar</button>
-    </div>
-  </div>
+    <!-- Pie de página -->
+    <footer class="bg-white border-t border-gray-200 py-6 mt-12 text-center text-sm text-gray-500">
+        <p>&copy; 2026 Joliee Store. Todos los derechos reservados.</p>
+    </footer>
 
-  <!-- Modal Panel de Control -->
-  <div class="modal" id="admin-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeAdminModal()">&times;</button>
-      <h2 style="margin-bottom: 20px; font-size: 20px; color: var(--primary);">Panel de Administración</h2>
-      <div style="margin-bottom: 20px; display: flex; gap: 10px;">
-        <button class="admin-btn-primary" style="margin-top:0;" onclick="openAddProductModal()">+ Agregar Producto</button>
-        <button class="admin-btn-primary" style="margin-top:0; background:#444;" onclick="openManageProductsModal()">Gestionar Productos</button>
-      </div>
-      <hr style="border:0; border-top:1px solid var(--border); margin: 20px 0;">
-      <h3 style="font-size: 16px; margin-bottom: 12px;">Ajustes de la Tienda</h3>
-      <div class="admin-form-group"><label>Nombre de la Tienda</label><input type="text" id="adm-setting-title" class="admin-input"></div>
-      <div class="admin-form-group"><label>Número de WhatsApp (ej: 584121234567)</label><input type="text" id="adm-setting-phone" class="admin-input"></div>
-      <div class="admin-form-group"><label>URL del Logo</label><input type="text" id="adm-setting-logo" class="admin-input"></div>
-      <div class="admin-form-group"><label>Nueva Contraseña de la Tuerca</label><input type="password" id="adm-setting-pass" class="admin-input" placeholder="Escribe nueva clave"></div>
-      <button class="admin-btn-primary" onclick="saveSettingsToCloud()">Guardar Ajustes</button>
-    </div>
-  </div>
+    <!-- Lógica de la Tienda y Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, setDoc, doc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  <!-- Modal Agregar / Editar Producto -->
-  <div class="modal" id="edit-product-modal">
-    <div class="modal-content">
-      <button class="close-btn" onclick="closeEditProductModal()">&times;</button>
-      <h2 id="edit-modal-title" style="margin-bottom: 15px; font-size: 18px;">Nuevo Producto</h2>
-      <input type="hidden" id="edit-prod-id">
-      <div class="admin-form-group"><label>Título del Producto</label><input type="text" id="edit-prod-title" class="admin-input"></div>
-      <div class="admin-form-group"><label>Categoría</label><select id="edit-prod-cat" class="admin-select"></select></div>
-      <div class="admin-form-group"><label>Precio ($)</label><input type="text" id="edit-prod-price" class="admin-input"></div>
-      <div class="admin-form-group">
-        <label>URLs de Imágenes (Pega enlaces web separados por comas ,)</label>
-        <textarea id="edit-prod-img" class="admin-textarea" rows="3" placeholder="https://i.ibb.co/foto1.jpg, https://i.ibb.co/foto2.jpg"></textarea>
-      </div>
-      <div class="admin-form-group"><label>Estado</label><select id="edit-prod-status" class="admin-select"><option value="Disponible">Disponible</option><option value="Agotado">Agotado</option></select></div>
-      <div class="admin-form-group"><label>Visibilidad</label><select id="edit-prod-visibility" class="admin-select"><option value="Mostrar">Mostrar</option><option value="Ocultar">Ocultar</option></select></div>
-      <div class="admin-form-group"><label>Descripción</label><textarea id="edit-prod-desc" class="admin-textarea" rows="3"></textarea></div>
-      <button class="admin-btn-primary" onclick="saveProductToCloud()">Guardar en la Nube</button>
-    </div>
-  </div>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD-Placeholder-Configuracion-Segura",
+            authDomain: "jolieestore.firebaseapp.com",
+            projectId: "jolieestore",
+            storageBucket: "jolieestore.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456:web:abcde"
+        };
 
-  <!-- Modal Gestión -->
-  <div class="modal" id="manage-products-modal">
-    <div class="modal-content" style="max-width: 700px;">
-      <button class="close-btn" onclick="closeManageProductsModal()">&times;</button>
-      <h2 style="margin-bottom: 15px; font-size: 18px;">Lista de Productos en la Nube</h2>
-      <div id="manage-products-list" style="max-height: 60vh; overflow-y: auto; display: flex; flex-direction: column; gap: 10px;"></div>
-    </div>
-  </div>
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-  <script>
-    let defaultCategories = [
-      "Todos", "Cuidado Facial", "Splash, Cremas, Perfumes", "Labiales", 
-      "Cejas y Pestañas", "Bases y Correctores", "Polvos y Rubores", 
-      "Iluminadores y Contornos", "Cabello", "Accesorios y Brochas",
-      "Rimel y Delineadores", "Primers y Selladores", "Mascarilla", 
-      "Termos", "Relojes", "Paleta de Sombras"
-    ];
-
-    // Respaldo inicial de tus productos (puedes gestionarlos luego por la tuerca)
-    let initialProducts = [
+        // ==========================================
+        // PEGA AQUÍ ABAJO TUS 220 PRODUCTOS EXACTOS:
+        // let initialProducts = [ ... ];
+        // ==========================================
+        let initialProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
   { id: 3, title: "Labial Mate Terciopelo", cat: "Labiales", price: "8.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", visibility: "Mostrar", desc: "Alta pigmentación y larga duración." },
@@ -431,313 +323,165 @@
   { id: 219, title: "Primer de Ojos Anti-pliegues", cat: "Primers y Selladores", price: "7.50", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", visibility: "Mostrar", desc: "Garantiza que tus sombras permanezcan intactas todo el día." },
   { id: 220, title: "Estuche Neceser Organizador Grande de Viaje", cat: "Accesorios y Brochas", price: "15.00", img: "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400", status: "Disponible", visibility: "Mostrar", desc: "Gran capacidad y múltiples compartimentos para tu maquillaje." }
 ];
-    let storeData = {
-      categories: defaultCategories,
-      products: [],
-      settings: {
-        title: "Joliee Store", 
-        sub: "Catálogo Oficial", 
-        logo: "https://i.ibb.co/689L53H/joliee-store-logo.png", 
-        phone: "", 
-        primary: "#800020",
-        pass: "1234"
-      },
-      activeCat: "Todos"
-    };
+        let currentProducts = [];
+        let currentCategory = "Todos";
+        let currentPage = 1;
+        const itemsPerPage = 24; // Bloques exactos de 24 productos por página
 
-    window.initStoreApp = async function() {
-      await loadDataFromCloud();
-      applySettings();
-      renderCategories();
-      renderCatalog();
-    }
-
-    async function loadDataFromCloud() {
-      try {
-        const querySnapshot = await window.getDocs(window.collection(window.db, "store_data"));
-        let foundProducts = false;
-        querySnapshot.forEach((docSnap) => {
-          if(docSnap.id === "settings") {
-            storeData.settings = { ...storeData.settings, ...docSnap.data() };
-          }
-          if(docSnap.id === "products_list") {
-            storeData.products = docSnap.data().items || [];
-            foundProducts = true;
-          }
-        });
-        
-        // Si es la primera vez y Firebase está vacío, guardamos los productos iniciales automáticamente
-        if (!foundProducts || storeData.products.length === 0) {
-          storeData.products = initialProducts;
-          await window.setDoc(window.doc(window.db, "store_data", "products_list"), { items: storeData.products });
+        window.loadStoreData = async function() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "products"));
+                if (!querySnapshot.empty) {
+                    currentProducts = [];
+                    querySnapshot.forEach((doc) => {
+                        currentProducts.push(doc.data());
+                    });
+                } else if (initialProducts.length > 0) {
+                    currentProducts = initialProducts;
+                    for (let p of initialProducts) {
+                        await setDoc(doc(db, "products", String(p.id)), p);
+                    }
+                } else {
+                    currentProducts = [];
+                }
+            } catch (e) {
+                console.warn("Usando respaldo local:", e);
+                currentProducts = initialProducts;
+            }
+            renderCategories();
+            renderProducts();
         }
-      } catch (e) {
-        console.log("Cargando modo local por error de red:", e);
-        storeData.products = initialProducts;
-      }
-    }
 
-    function applySettings() {
-      const s = storeData.settings;
-      document.getElementById('display-title').innerText = s.title || "Joliee Store";
-      document.getElementById('display-sub').innerText = s.sub || "";
-      document.getElementById('page-title').innerText = s.title || "Joliee Store";
-      const logoEl = document.getElementById('store-logo');
-      if (s.logo) { logoEl.src = s.logo; logoEl.style.display = "block"; } else { logoEl.style.display = "none"; }
-      document.documentElement.style.setProperty('--primary', s.primary || '#800020');
-    }
-
-    function requestAdminAccess() {
-      document.getElementById('auth-password-input').value = "";
-      document.getElementById('auth-modal').style.display = 'flex';
-    }
-    function closeAuthModal() { document.getElementById('auth-modal').style.display = 'none'; }
-
-    function verifyPassword() {
-      const currentPass = storeData.settings.pass || "1234";
-      const entered = document.getElementById('auth-password-input').value;
-      if (entered === currentPass) {
-        closeAuthModal();
-        openAdminModal();
-      } else {
-        alert("Contraseña incorrecta.");
-      }
-    }
-
-    function renderCategories() {
-      const bar = document.getElementById('cat-chips');
-      if (!bar) return; bar.innerHTML = "";
-      storeData.categories.forEach(cat => {
-        const chip = document.createElement('button');
-        chip.className = `cat-chip ${storeData.activeCat === cat ? 'active' : ''}`;
-        chip.innerText = cat;
-        chip.onclick = () => { storeData.activeCat = cat; renderCategories(); renderCatalog(); };
-        bar.appendChild(chip);
-      });
-    }
-
-    function onSearchOrCatChange() { renderCatalog(); }
-
-    function renderCatalog() {
-      const grid = document.getElementById('catalog-grid');
-      const search = document.getElementById('search-input')?.value.toLowerCase() || "";
-      if (!grid) return; grid.innerHTML = "";
-
-      const visibleProducts = storeData.products.filter(p => (p.visibility || "Mostrar") === "Mostrar");
-      const filtered = visibleProducts.filter(p => {
-        const matchCat = storeData.activeCat === "Todos" || p.cat === storeData.activeCat;
-        const matchSearch = p.title.toLowerCase().includes(search);
-        return matchCat && matchSearch;
-      });
-
-      filtered.forEach(p => {
-        const card = document.createElement('div');
-        card.className = "card";
-        card.onclick = () => openProductDetail(p.id);
-        const isAgotado = p.status === "Agotado";
-        const badgeHtml = isAgotado ? `<span class="badge-status badge-soldout">Agotado</span>` : `<span class="badge-status badge-available">Disponible</span>`;
-        
-        let firstImg = p.img || "";
-        if(firstImg.includes(',')) firstImg = firstImg.split(',')[0].trim();
-
-        card.innerHTML = `
-          <div class="card-img-container">${badgeHtml}<img src="${firstImg}" class="card-img" alt="${p.title}"></div>
-          <div class="card-content">
-            <span class="card-cat">${p.cat}</span>
-            <div class="card-title">${p.title}</div>
-            <div class="card-price">$${p.price}</div>
-          </div>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    function openProductDetail(id) {
-      const p = storeData.products.find(item => item.id === id);
-      if (!p) return;
-
-      let imgList = [];
-      if(p.img) imgList = p.img.split(',').map(url => url.trim()).filter(url => url.length > 0);
-      if(imgList.length === 0) imgList = ["https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400"];
-
-      const mainImgEl = document.getElementById('detail-img');
-      mainImgEl.src = imgList[0];
-
-      const thumbsContainer = document.getElementById('detail-thumbs');
-      thumbsContainer.innerHTML = "";
-      if(imgList.length > 1) {
-        thumbsContainer.style.display = "flex";
-        imgList.forEach((url, idx) => {
-          const thumb = document.createElement('img');
-          thumb.src = url;
-          thumb.className = `thumb-img ${idx === 0 ? 'active' : ''}`;
-          thumb.onclick = () => {
-            mainImgEl.src = url;
-            document.querySelectorAll('.thumb-img').forEach(t => t.classList.remove('active'));
-            thumb.classList.add('active');
-          };
-          thumbsContainer.appendChild(thumb);
-        });
-      } else {
-        thumbsContainer.style.display = "none";
-      }
-
-      document.getElementById('detail-cat').innerText = p.cat;
-      document.getElementById('detail-title').innerText = p.title;
-      document.getElementById('detail-price').innerText = '$' + p.price;
-      document.getElementById('detail-desc').innerText = p.desc || 'Sin descripción disponible.';
-      
-      const isAgotado = p.status === "Agotado";
-      document.getElementById('detail-badge').innerHTML = isAgotado ? `<span class="badge-status badge-soldout">Agotado</span>` : `<span class="badge-status badge-available">Disponible</span>`;
-      
-      const wsBtn = document.getElementById('detail-ws-btn');
-      const phone = storeData.settings.phone || "";
-      if (isAgotado) { 
-        wsBtn.className = "btn-ws disabled"; wsBtn.href = "#"; wsBtn.innerText = "Producto Agotado"; 
-      } else { 
-        wsBtn.className = "btn-ws"; 
-        wsBtn.href = `https://wa.me/${phone}?text=${encodeURIComponent('Hola! Me interesa: ' + p.title + ' ($' + p.price + ')')}`; 
-        wsBtn.innerText = "Pedir por WhatsApp"; 
-      }
-      document.getElementById('product-detail-modal').style.display = 'flex';
-    }
-
-    function closeProductDetail() { document.getElementById('product-detail-modal').style.display = 'none'; }
-
-    function openAdminModal() {
-      document.getElementById('adm-setting-title').value = storeData.settings.title || "";
-      document.getElementById('adm-setting-phone').value = storeData.settings.phone || "";
-      document.getElementById('adm-setting-logo').value = storeData.settings.logo || "";
-      document.getElementById('adm-setting-pass').value = storeData.settings.pass || "1234";
-      document.getElementById('admin-modal').style.display = 'flex';
-    }
-    function closeAdminModal() { document.getElementById('admin-modal').style.display = 'none'; }
-
-    async function saveSettingsToCloud() {
-      storeData.settings.title = document.getElementById('adm-setting-title').value;
-      storeData.settings.phone = document.getElementById('adm-setting-phone').value;
-      storeData.settings.logo = document.getElementById('adm-setting-logo').value;
-      const newPass = document.getElementById('adm-setting-pass').value;
-      if (newPass && newPass.trim() !== "") storeData.settings.pass = newPass.trim();
-
-      try {
-        await window.setDoc(window.doc(window.db, "store_data", "settings"), storeData.settings);
-        applySettings();
-        closeAdminModal();
-        alert('¡Ajustes guardados en la nube con éxito!');
-      } catch (e) {
-        alert('Error al guardar en la nube: ' + e.message);
-      }
-    }
-
-    function openAddProductModal() {
-      document.getElementById('edit-modal-title').innerText = "Nuevo Producto";
-      document.getElementById('edit-prod-id').value = "";
-      document.getElementById('edit-prod-title').value = "";
-      document.getElementById('edit-prod-price').value = "";
-      document.getElementById('edit-prod-img').value = "";
-      document.getElementById('edit-prod-desc').value = "";
-      
-      const catSelect = document.getElementById('edit-prod-cat');
-      catSelect.innerHTML = "";
-      storeData.categories.forEach(c => { if(c !== "Todos") catSelect.innerHTML += `<option value="${c}">${c}</option>`; });
-      
-      closeAdminModal();
-      document.getElementById('edit-product-modal').style.display = 'flex';
-    }
-    function closeEditProductModal() { document.getElementById('edit-product-modal').style.display = 'none'; }
-
-    async function saveProductToCloud() {
-      const idVal = document.getElementById('edit-prod-id').value;
-      const title = document.getElementById('edit-prod-title').value;
-      const cat = document.getElementById('edit-prod-cat').value;
-      const price = document.getElementById('edit-prod-price').value;
-      const img = document.getElementById('edit-prod-img').value;
-      const status = document.getElementById('edit-prod-status').value;
-      const visibility = document.getElementById('edit-prod-visibility').value;
-      const desc = document.getElementById('edit-prod-desc').value;
-
-      if(!title || !price) { alert('Por favor completa al menos el título y el precio.'); return; }
-
-      if(idVal) {
-        const prod = storeData.products.find(p => p.id == idVal);
-        if(prod) { prod.title = title; prod.cat = cat; prod.price = price; prod.img = img; prod.status = status; prod.visibility = visibility; prod.desc = desc; }
-      } else {
-        const newId = storeData.products.length > 0 ? Math.max(...storeData.products.map(p => p.id)) + 1 : 101;
-        storeData.products.unshift({ id: newId, title, cat, price, img, status, visibility, desc });
-      }
-
-      try {
-        await window.setDoc(window.doc(window.db, "store_data", "products_list"), { items: storeData.products });
-        closeEditProductModal();
-        renderCatalog();
-        alert('¡Producto guardado y sincronizado en la nube para todo el mundo!');
-      } catch (e) {
-        alert('Error al sincronizar con la nube: ' + e.message);
-      }
-    }
-
-    function openManageProductsModal() {
-      closeAdminModal();
-      const listContainer = document.getElementById('manage-products-list');
-      listContainer.innerHTML = "";
-      storeData.products.forEach(p => {
-        let firstImg = p.img || "";
-        if(firstImg.includes(',')) firstImg = firstImg.split(',')[0].trim();
-
-        const item = document.createElement('div');
-        item.style.cssText = "display:flex; justify-content:space-between; align-items:center; background:var(--bg); padding:10px; border-radius:8px; border:1px solid var(--border);";
-        item.innerHTML = `
-          <div style="display:flex; align-items:center; gap:10px;">
-            <img src="${firstImg}" style="width:40px; height:40px; object-fit:cover; border-radius:4px;">
-            <div>
-              <div style="font-size:14px; font-weight:600;">${p.title}</div>
-              <div style="font-size:12px; color:var(--text-muted);">$${p.price} - ${p.status}</div>
-            </div>
-          </div>
-          <div style="display:flex; gap:6px;">
-            <button class="admin-btn-primary" style="margin-top:0; padding:6px 10px; font-size:12px;" onclick="editProduct(${p.id})">Editar</button>
-            <button class="admin-btn-danger" onclick="deleteCloudProduct(${p.id})">Eliminar</button>
-          </div>
-        `;
-        listContainer.appendChild(item);
-      });
-      document.getElementById('manage-products-modal').style.display = 'flex';
-    }
-    function closeManageProductsModal() { document.getElementById('manage-products-modal').style.display = 'none'; }
-
-    function editProduct(id) {
-      const p = storeData.products.find(item => item.id === id);
-      if(!p) return;
-      closeManageProductsModal();
-      document.getElementById('edit-modal-title').innerText = "Editar Producto";
-      document.getElementById('edit-prod-id').value = p.id;
-      document.getElementById('edit-prod-title').value = p.title;
-      document.getElementById('edit-prod-price').value = p.price;
-      document.getElementById('edit-prod-img').value = p.img || "";
-      document.getElementById('edit-prod-status').value = p.status || "Disponible";
-      document.getElementById('edit-prod-visibility').value = p.visibility || "Mostrar";
-      document.getElementById('edit-prod-desc').value = p.desc || "";
-
-      const catSelect = document.getElementById('edit-prod-cat');
-      catSelect.innerHTML = "";
-      storeData.categories.forEach(c => { if(c !== "Todos") catSelect.innerHTML += `<option value="${c}" ${c === p.cat ? 'selected' : ''}>${c}</option>`; });
-
-      document.getElementById('edit-product-modal').style.display = 'flex';
-    }
-
-    async function deleteCloudProduct(id) {
-      if(confirm('¿Eliminar este producto de la nube para todos?')) {
-        storeData.products = storeData.products.filter(p => p.id !== id);
-        try {
-          await window.setDoc(window.doc(window.db, "store_data", "products_list"), { items: storeData.products });
-          openManageProductsModal();
-          renderCatalog();
-        } catch (e) {
-          alert('Error al eliminar: ' + e.message);
+        window.renderCategories = function() {
+            const categoriesContainer = document.getElementById('category-filters');
+            const cats = ["Todos", ...new Set(currentProducts.map(p => p.cat))];
+            categoriesContainer.innerHTML = cats.map(cat => `
+                <button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-lg text-sm font-medium transition ${currentCategory === cat ? 'bg-rose-900 text-white' : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'}">
+                    ${cat}
+                </button>
+            `).join('');
         }
-      }
-    }
-  </script>
+
+        window.setCategory = function(cat) {
+            currentCategory = cat;
+            currentPage = 1;
+            renderProducts();
+            renderCategories();
+        }
+
+        window.filterProducts = function() {
+            currentPage = 1;
+            renderProducts();
+        }
+
+        window.renderProducts = function() {
+            const searchVal = document.getElementById('search-input').value.toLowerCase();
+            const filtered = currentProducts.filter(p => {
+                const matchesCat = currentCategory === "Todos" || p.cat === currentCategory;
+                const matchesSearch = p.title.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+                const isVisible = p.visibility !== "Ocultar";
+                return matchesCat && matchesSearch && isVisible;
+            });
+
+            const totalPages = Math.ceil(filtered.length / itemsPerPage) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const start = (currentPage - 1) * itemsPerPage;
+            const paginatedItems = filtered.slice(start, start + itemsPerPage);
+
+            const grid = document.getElementById('products-grid');
+            if (paginatedItems.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-gray-400">No se encontraron productos.</div>`;
+            } else {
+                grid.innerHTML = paginatedItems.map(p => `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
+                        <div class="h-48 bg-gray-100 overflow-hidden relative">
+                            <img src="${p.img}" alt="${p.title}" class="w-full h-full object-cover">
+                            <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-full text-rose-900">${p.cat}</span>
+                        </div>
+                        <div class="p-4 flex flex-col flex-grow">
+                            <h3 class="font-bold text-gray-800 text-base mb-1">${p.title}</h3>
+                            <p class="text-sm text-gray-500 mb-4 flex-grow">${p.desc}</p>
+                            <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
+                                <span class="text-lg font-bold text-rose-900">$${p.price}</span>
+                                <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">${p.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            renderPagination(totalPages);
+        }
+
+        window.renderPagination = function(totalPages) {
+            const container = document.getElementById('pagination-container');
+            if (totalPages <= 1) {
+                container.innerHTML = '';
+                return;
+            }
+
+            let html = `
+                <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-1 border rounded-lg"' : 'class="px-3 py-1 border rounded-lg hover:bg-gray-50"'}>
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+            `;
+
+            for (let i = 1; i <= totalPages; i++) {
+                html += `
+                    <button onclick="changePage(${i})" class="px-3.5 py-1 rounded-lg text-sm font-semibold transition ${currentPage === i ? 'bg-rose-900 text-white' : 'border border-gray-200 text-gray-600 hover:bg-gray-50'}">
+                        ${i}
+                    </button>
+                `;
+            }
+
+            html += `
+                <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled class="opacity-40 cursor-not-allowed px-3 py-1 border rounded-lg"' : 'class="px-3 py-1 border rounded-lg hover:bg-gray-50"'}>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        window.changePage = function(page) {
+            currentPage = page;
+            renderProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.openAdminModal = function() {
+            document.getElementById('admin-modal').classList.remove('hidden');
+        }
+
+        window.closeAdminModal = function() {
+            document.getElementById('admin-modal').classList.add('hidden');
+            document.getElementById('admin-password').value = '';
+        }
+
+        window.verifyAdminPassword = function() {
+            const pass = document.getElementById('admin-password').value;
+            if (pass === "1234" || pass === "admin") {
+                document.getElementById('admin-login-view').classList.add('hidden');
+                document.getElementById('admin-dashboard-view').classList.remove('hidden');
+            } else {
+                alert('Contraseña incorrecta');
+            }
+        }
+
+        window.syncToFirebaseManual = async function() {
+            try {
+                for (let p of currentProducts) {
+                    await setDoc(doc(db, "products", String(p.id)), p);
+                }
+                alert('¡Sincronización con Firebase completada con éxito!');
+                loadStoreData();
+            } catch (err) {
+                alert('Error al sincronizar: ' + err.message);
+            }
+        }
+
+        loadStoreData();
+    </script>
 </body>
 </html>
