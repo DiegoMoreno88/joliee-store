@@ -13,7 +13,8 @@
     <header class="bg-white shadow-sm sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <img id="store-logo-img" src="" alt="Logo" class="w-10 h-10 object-cover rounded-full hidden">
+                <!-- Imagen de la tienda más grande (w-14 h-14) -->
+                <img id="store-logo-img" src="" alt="Logo" class="w-14 h-14 object-cover rounded-full hidden shadow-sm border">
                 <div>
                     <h1 id="store-title" class="text-2xl font-bold text-rose-900 tracking-wide">Joliee Store</h1>
                     <p id="store-subtitle" class="text-xs text-gray-500">Catálogo Oficial</p>
@@ -46,6 +47,11 @@
         </div>
         <div id="no-products" class="hidden text-center py-16 text-gray-400">
             No se encontraron productos.
+        </div>
+
+        <!-- Paginación numérica (Pie de página) -->
+        <div id="pagination-container" class="flex justify-center items-center gap-2 mt-10 pb-6">
+            <!-- Botones 1, 2, 3, 4, 5... dinámicos -->
         </div>
     </main>
 
@@ -387,6 +393,8 @@
         let currentProducts = [];
         let storeConfig = { title: "Joliee Store", subtitle: "Catálogo Oficial", logo: "", adminPass: "1234" };
         let selectedCategory = 'Todos';
+        let currentPage = 1;
+        const itemsPerPage = 12; // Cantidad de productos por página
 
         async function loadStoreData() {
             try {
@@ -415,7 +423,6 @@
                     cloudProducts = Object.values(data).filter(item => typeof item === 'object' && item !== null && 'id' in item);
                 }
 
-                // Si la nube tiene pocos productos y tenemos fallback configurado, fusionamos o priorizamos el respaldo completo de los 220
                 if (cloudProducts.length < fallbackProducts.length) {
                     currentProducts = fallbackProducts;
                     const dataObject = {};
@@ -476,17 +483,20 @@
 
         window.filterByCategory = function(cat) {
             selectedCategory = cat;
+            currentPage = 1; // Reiniciar a la página 1 al cambiar de categoría
             renderCategories();
             renderProducts();
         }
 
         window.filterProducts = function() {
+            currentPage = 1; // Reiniciar a la página 1 al buscar
             renderProducts();
         }
 
         window.renderProducts = function() {
             const grid = document.getElementById('products-grid');
             const noProd = document.getElementById('no-products');
+            const paginationContainer = document.getElementById('pagination-container');
             const query = document.getElementById('search-input').value.toLowerCase();
 
             const filtered = currentProducts.filter(p => {
@@ -497,12 +507,20 @@
 
             if (filtered.length === 0) {
                 grid.innerHTML = '';
+                paginationContainer.innerHTML = '';
                 noProd.classList.remove('hidden');
                 return;
             }
             noProd.classList.add('hidden');
 
-            grid.innerHTML = filtered.map(p => `
+            // Paginación lógica
+            const totalPages = Math.ceil(filtered.length / itemsPerPage);
+            if (currentPage > totalPages) currentPage = totalPages;
+            
+            const startIdx = (currentPage - 1) * itemsPerPage;
+            const paginatedItems = filtered.slice(startIdx, startIdx + itemsPerPage);
+
+            grid.innerHTML = paginatedItems.map(p => `
                 <div onclick="openProductDetail(${p.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border cursor-pointer flex flex-col">
                     <img src="${p.img || 'https://via.placeholder.com/300'}" alt="${p.title}" class="w-full h-48 object-cover">
                     <div class="p-4 flex flex-col flex-grow">
@@ -512,6 +530,29 @@
                     </div>
                 </div>
             `).join('');
+
+            // Renderizar botones numéricos (1, 2, 3, 4, 5...)
+            if (totalPages > 1) {
+                let pagesHtml = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    pagesHtml += `
+                        <button onclick="goToPage(${i})" class="w-10 h-10 rounded-xl font-medium text-sm transition ${currentPage === i ? 'bg-rose-900 text-white shadow' : 'bg-white border text-gray-700 hover:bg-gray-100'}">
+                            ${i}
+                        </button>
+                    `;
+                }
+                paginationContainer.innerHTML = pagesHtml;
+                paginationContainer.classList.remove('hidden');
+            } else {
+                paginationContainer.innerHTML = '';
+                paginationContainer.classList.add('hidden');
+            }
+        }
+
+        window.goToPage = function(page) {
+            currentPage = page;
+            renderProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         window.openProductDetail = function(productId) {
