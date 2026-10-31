@@ -17,6 +17,7 @@
         .bg-custom-primary { background-color: var(--color-primary); }
         .bg-custom-primary:hover { background-color: var(--color-primary-hover); }
         .text-custom-primary { color: var(--color-primary); }
+        .border-custom-primary { border-color: var(--color-primary); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
@@ -59,6 +60,34 @@
         </div>
         <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-10"></div>
     </main>
+
+    <!-- Modal de Detalle del Producto (Vista Expandida al Hacer Clic) -->
+    <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center z-50 p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 relative overflow-hidden">
+            <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-20 bg-white/80 rounded-full p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="w-full md:w-1/2 flex flex-col items-center">
+                    <div class="h-64 w-full bg-gray-100 rounded-xl overflow-hidden relative shadow-inner">
+                        <img id="detail-main-img" src="" alt="" class="w-full h-full object-cover">
+                    </div>
+                    <!-- Galería miniatura si tiene varias fotos -->
+                    <div id="detail-gallery-thumbs" class="flex gap-2 mt-3 overflow-x-auto w-full justify-center"></div>
+                </div>
+                <div class="w-full md:w-1/2 flex flex-col justify-between">
+                    <div>
+                        <span id="detail-product-cat" class="text-xs font-bold px-2.5 py-1 bg-rose-50 text-custom-primary rounded-full uppercase tracking-wider"></span>
+                        <h2 id="detail-product-title" class="text-2xl font-bold text-gray-800 mt-2 mb-2"></h2>
+                        <p id="detail-product-price" class="text-2xl font-extrabold text-custom-primary mb-4"></p>
+                        <p id="detail-product-desc" class="text-sm text-gray-600 leading-relaxed mb-6"></p>
+                    </div>
+                    <div class="pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <span id="detail-product-status" class="text-xs px-3 py-1 bg-emerald-50 text-emerald-700 rounded-md font-semibold"></span>
+                        <button onclick="closeProductDetailModal()" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal Admin Completo -->
     <div id="admin-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center z-50 p-4 overflow-y-auto">
@@ -106,7 +135,7 @@
                     </div>
                 </div>
 
-                <!-- SECCIÓN 2: APARICIÓN Y SEGURIDAD -->
+                <!-- SECCIÓN 2: APARIENCIA Y SEGURIDAD -->
                 <div id="tab-content-appearance" class="hidden flex-col space-y-4 overflow-y-auto max-h-[50vh] pr-1">
                     <div class="p-3 bg-gray-50 border rounded-lg space-y-3">
                         <h4 class="font-bold text-sm text-gray-700"><i class="fa-solid fa-palette"></i> Apariencia</h4>
@@ -160,9 +189,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ==========================================
-        // PEGA AQUÍ TU LISTA DE 220 PRODUCTOS
-        // ==========================================
         const fallbackProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
@@ -414,7 +440,6 @@
                     const data = prodSnap.data();
                     currentProducts = Object.values(data).filter(item => typeof item === 'object' && item !== null && 'id' in item);
                 } else if (fallbackProducts.length > 0) {
-                    // Si Firebase está vacío, sube automáticamente tus 220 productos a la nube
                     currentProducts = fallbackProducts;
                     const dataObject = {};
                     fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
@@ -479,16 +504,37 @@
         window.setCategory = function(cat) { currentCategory = cat; currentPage = 1; renderProducts(); renderCategories(); }
         window.filterProducts = function() { currentPage = 1; renderProducts(); }
 
-        window.switchProductImage = function(productId, imgUrl, btnElement) {
-            const imgElement = document.getElementById(`prod-img-${productId}`);
-            if (imgElement) imgElement.src = imgUrl;
-            const parent = btnElement.parentElement;
-            parent.querySelectorAll('button').forEach(b => {
-                b.classList.remove('bg-custom-primary');
-                b.classList.add('bg-gray-300');
-            });
-            btnElement.classList.remove('bg-gray-300');
-            btnElement.classList.add('bg-custom-primary');
+        // Abrir vista detallada al hacer clic en el producto
+        window.openProductDetail = function(productId) {
+            const p = currentProducts.find(item => item.id === productId);
+            if (!p) return;
+
+            const imageList = (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 0) ? p.gallery : [p.img];
+            
+            document.getElementById('detail-main-img').src = imageList[0];
+            document.getElementById('detail-product-cat').innerText = p.cat;
+            document.getElementById('detail-product-title').innerText = p.title;
+            document.getElementById('detail-product-price').innerText = `$${p.price}`;
+            document.getElementById('detail-product-desc').innerText = p.desc || "Sin descripción disponible para este producto.";
+            document.getElementById('detail-product-status').innerText = p.status || "Disponible";
+
+            // Generar miniaturas si hay más de una foto
+            const thumbsContainer = document.getElementById('detail-gallery-thumbs');
+            if (imageList.length > 1) {
+                thumbsContainer.innerHTML = imageList.map((imgUrl, idx) => `
+                    <img src="${imgUrl}" onclick="document.getElementById('detail-main-img').src='${imgUrl}'" class="w-12 h-12 object-cover rounded-lg cursor-pointer border-2 hover:border-rose-900 transition">
+                `).join('');
+                thumbsContainer.classList.remove('hidden');
+            } else {
+                thumbsContainer.innerHTML = '';
+                thumbsContainer.classList.add('hidden');
+            }
+
+            document.getElementById('product-detail-modal').classList.remove('hidden');
+        }
+
+        window.closeProductDetailModal = function() {
+            document.getElementById('product-detail-modal').classList.add('hidden');
         }
 
         window.renderProducts = function() {
@@ -512,26 +558,16 @@
                 grid.innerHTML = paginatedItems.map(p => {
                     const imageList = (p.gallery && Array.isArray(p.gallery) && p.gallery.length > 0) ? p.gallery : [p.img];
                     const mainImage = imageList[0];
-                    let galleryControlsHtml = "";
-                    if (imageList.length > 1) {
-                        galleryControlsHtml = `
-                            <div class="absolute bottom-2 left-0 right-0 flex justify-center space-x-1.5 z-10">
-                                ${imageList.map((imgUrl, index) => `
-                                    <button onclick="switchProductImage(${p.id}, '${imgUrl}', this)" class="w-2.5 h-2.5 rounded-full transition ${index === 0 ? 'bg-custom-primary' : 'bg-gray-300'}"></button>
-                                `).join('')}
-                            </div>
-                        `;
-                    }
                     return `
-                        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-md transition">
+                        <div onclick="openProductDetail(${p.id})" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col hover:shadow-lg cursor-pointer transition transform hover:-translate-y-1">
                             <div class="h-48 bg-gray-100 overflow-hidden relative">
-                                <img id="prod-img-${p.id}" src="${mainImage}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400?text=Sin+Imagen'">
+                                <img src="${mainImage}" alt="${p.title}" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/400?text=Sin+Imagen'">
                                 <span class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm text-xs font-semibold px-2.5 py-1 rounded-full text-custom-primary">${p.cat}</span>
-                                ${galleryControlsHtml}
+                                ${imageList.length > 1 ? '<span class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-0.5 rounded-full"><i class="fa-regular fa-images"></i> Vistas</span>' : ''}
                             </div>
                             <div class="p-4 flex flex-col flex-grow">
                                 <h3 class="font-bold text-gray-800 text-base mb-1">${p.title}</h3>
-                                <p class="text-sm text-gray-500 mb-4 flex-grow">${p.desc || ''}</p>
+                                <p class="text-sm text-gray-500 mb-4 flex-grow line-clamp-2">${p.desc || ''}</p>
                                 <div class="flex justify-between items-center mt-auto pt-3 border-t border-gray-100">
                                     <span class="text-lg font-bold text-custom-primary">$${p.price}</span>
                                     <span class="text-xs px-2 py-1 bg-emerald-50 text-emerald-700 rounded-md font-medium">${p.status || 'Disponible'}</span>
@@ -588,7 +624,7 @@
                         <img src="${p.img}" class="w-8 h-8 object-cover rounded" onerror="this.src='https://via.placeholder.com/50'">
                         <div class="truncate"><p class="font-bold text-gray-800 truncate">${p.title}</p><p class="text-gray-500">${p.cat} - $${p.price}</p></div>
                     </div>
-                    <div class="flex items-center space-x-1">
+                    <div class="flex items-center space-x-1" onclick="event.stopPropagation()">
                         <button onclick="editProduct(${p.id})" class="p-1.5 text-blue-600 hover:bg-blue-50 rounded" title="Editar"><i class="fa-solid fa-pen-to-square"></i></button>
                         <button onclick="deleteProduct(${p.id})" class="p-1.5 text-rose-600 hover:bg-rose-50 rounded" title="Eliminar"><i class="fa-solid fa-trash"></i></button>
                     </div>
