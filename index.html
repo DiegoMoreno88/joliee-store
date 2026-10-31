@@ -61,7 +61,7 @@
         <div id="pagination-container" class="flex justify-center items-center space-x-2 mt-10"></div>
     </main>
 
-    <!-- Modal de Detalle del Producto (Vista Expandida al Hacer Clic) -->
+    <!-- Modal de Detalle del Producto -->
     <div id="product-detail-modal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex justify-center items-center z-50 p-4">
         <div class="bg-white rounded-2xl shadow-2xl max-w-xl w-full p-6 relative overflow-hidden">
             <button onclick="closeProductDetailModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 z-20 bg-white/80 rounded-full p-2"><i class="fa-solid fa-xmark text-xl"></i></button>
@@ -70,7 +70,6 @@
                     <div class="h-64 w-full bg-gray-100 rounded-xl overflow-hidden relative shadow-inner">
                         <img id="detail-main-img" src="" alt="" class="w-full h-full object-cover">
                     </div>
-                    <!-- Galería miniatura si tiene varias fotos -->
                     <div id="detail-gallery-thumbs" class="flex gap-2 mt-3 overflow-x-auto w-full justify-center"></div>
                 </div>
                 <div class="w-full md:w-1/2 flex flex-col justify-between">
@@ -189,7 +188,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        const fallbackProducts = [
+        const fallbackProducts = [  
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
   { id: 3, title: "Labial Mate Terciopelo", cat: "Labiales", price: "8.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", visibility: "Mostrar", desc: "Alta pigmentación y larga duración." },
@@ -443,7 +442,7 @@
                     currentProducts = fallbackProducts;
                     const dataObject = {};
                     fallbackProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                    await setDoc(prodRef, dataObject);
+                    await setDoc(prodRef, dataObject, { merge: true });
                 } else {
                     currentProducts = [];
                 }
@@ -504,7 +503,6 @@
         window.setCategory = function(cat) { currentCategory = cat; currentPage = 1; renderProducts(); renderCategories(); }
         window.filterProducts = function() { currentPage = 1; renderProducts(); }
 
-        // Abrir vista detallada al hacer clic en el producto
         window.openProductDetail = function(productId) {
             const p = currentProducts.find(item => item.id === productId);
             if (!p) return;
@@ -518,7 +516,6 @@
             document.getElementById('detail-product-desc').innerText = p.desc || "Sin descripción disponible para este producto.";
             document.getElementById('detail-product-status').innerText = p.status || "Disponible";
 
-            // Generar miniaturas si hay más de una foto
             const thumbsContainer = document.getElementById('detail-gallery-thumbs');
             if (imageList.length > 1) {
                 thumbsContainer.innerHTML = imageList.map((imgUrl, idx) => `
@@ -688,7 +685,7 @@
             try {
                 const dataObject = {};
                 currentProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                await setDoc(doc(db, "store_data", "products_list"), dataObject);
+                await setDoc(doc(db, "store_data", "products_list"), dataObject, { merge: true });
                 alert('¡Guardado en la nube con éxito!');
                 cancelProductForm();
                 renderCategories();
@@ -703,7 +700,7 @@
                 try {
                     const dataObject = {};
                     currentProducts.forEach((p, idx) => { dataObject[idx] = p; });
-                    await setDoc(doc(db, "store_data", "products_list"), dataObject);
+                    await setDoc(doc(db, "store_data", "products_list"), dataObject, { merge: true });
                     renderCategories();
                     renderProducts();
                     renderAdminProductsList();
@@ -725,7 +722,7 @@
             }
 
             try {
-                await setDoc(doc(db, "store_data", "settings"), storeSettings);
+                await setDoc(doc(db, "store_data", "settings"), storeSettings, { merge: true });
                 applySettingsToUI();
                 alert('¡Ajustes guardados en la nube con éxito!');
             } catch (err) {
