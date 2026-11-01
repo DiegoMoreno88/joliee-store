@@ -80,7 +80,7 @@
                 <p id="detail-product-price" class="text-2xl font-black text-primary mt-2"></p>
                 <p id="detail-product-desc" class="text-gray-600 text-sm mt-4 leading-relaxed"></p>
                 <div class="mt-6 pt-4 border-t flex justify-between items-center">
-                    <span id="detail-product-status" class="text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">Disponible</span>
+                    <span id="detail-product-status" class="text-xs px-3 py-1 rounded-full font-medium">Disponible</span>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
                 </div>
 
                 <div>
-                    <!-- Encabezado con Buscador Integrado en el medio -->
+                    <!-- Encabezado y Buscador optimizados -->
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-3">
                         <h4 class="font-bold text-gray-800">Lista de Productos</h4>
                         <div class="relative w-full sm:w-64">
@@ -141,7 +141,7 @@
                         </div>
                         <button onclick="openProductForm()" class="bg-primary text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-primary-dark transition whitespace-nowrap"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
                     </div>
-                    <div id="admin-products-list" class="space-y-2 max-h-60 overflow-y-auto pr-1 border rounded-xl p-2 bg-gray-50">
+                    <div id="admin-products-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 border rounded-xl p-2 bg-gray-50">
                         <!-- Renderizado de productos para admin -->
                     </div>
                 </div>
@@ -152,15 +152,33 @@
                 <h4 id="form-action-title" class="font-bold text-gray-800 mb-3">Añadir / Editar Producto</h4>
                 <input type="hidden" id="form-id">
                 <div class="space-y-3">
-                    <input type="text" id="form-title-input" placeholder="Título del producto" class="w-full p-2 border rounded-xl">
+                    <input type="text" id="form-title-input" placeholder="Título del producto" class="w-full p-2 border rounded-xl text-sm">
                     <div class="grid grid-cols-2 gap-2">
-                        <input type="text" id="form-cat-input" placeholder="Categoría" class="w-full p-2 border rounded-xl">
-                        <input type="text" id="form-price-input" placeholder="Precio ($)" class="w-full p-2 border rounded-xl">
+                        <input type="text" id="form-cat-input" placeholder="Categoría" class="w-full p-2 border rounded-xl text-sm">
+                        <input type="text" id="form-price-input" placeholder="Precio ($)" class="w-full p-2 border rounded-xl text-sm">
                     </div>
-                    <input type="text" id="form-img-input" placeholder="URL Imagen Principal" class="w-full p-2 border rounded-xl">
-                    <input type="text" id="form-gallery-input" placeholder="URLs adicionales separadas por comas (,)" class="w-full p-2 border rounded-xl">
-                    <textarea id="form-desc-input" placeholder="Descripción detallada" class="w-full p-2 border rounded-xl h-24 resize-none"></textarea>
-                    <div class="flex justify-end gap-2">
+                    <input type="text" id="form-img-input" placeholder="URL Imagen Principal" class="w-full p-2 border rounded-xl text-sm">
+                    <input type="text" id="form-gallery-input" placeholder="URLs adicionales separadas por comas (,)" class="w-full p-2 border rounded-xl text-sm">
+                    <textarea id="form-desc-input" placeholder="Descripción detallada" class="w-full p-2 border rounded-xl h-20 resize-none text-sm"></textarea>
+                    
+                    <!-- Disponibilidad y Ocultar de la página principal -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t">
+                        <div>
+                            <label class="text-xs font-semibold text-gray-600 block mb-1">Disponibilidad</label>
+                            <select id="form-status-input" class="w-full p-2 border rounded-xl bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                                <option value="Disponible">Disponible</option>
+                                <option value="Agotado">Agotado</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center pt-5">
+                            <label class="flex items-center gap-2 cursor-pointer select-none">
+                                <input type="checkbox" id="form-hidden-input" class="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary">
+                                <span class="text-xs font-semibold text-gray-700">Ocultar de la página principal</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-end gap-2 pt-2">
                         <button onclick="cancelProductForm()" class="px-4 py-2 bg-gray-200 rounded-xl text-sm font-medium">Cancelar</button>
                         <button onclick="saveProductToCloud()" class="px-4 py-2 bg-primary text-white rounded-xl text-sm font-medium hover:bg-primary-dark">Guardar Producto</button>
                     </div>
@@ -186,7 +204,9 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // PEGA AQUÍ TUS 220 PRODUCTOS DENTRO DE ESTE ARREGLO
+        // ==========================================
+        // PEGA AQUÍ TUS 220 PRODUCTOS DE RESPALDO
+        // ==========================================
         const fallbackProducts = [
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
@@ -503,7 +523,8 @@
 
         window.renderCategories = function() {
             const container = document.getElementById('categories-container');
-            const cats = ['Todos', ...new Set(currentProducts.map(p => p.cat).filter(Boolean))];
+            const visibleProds = currentProducts.filter(p => !p.isHidden);
+            const cats = ['Todos', ...new Set(visibleProds.map(p => p.cat).filter(Boolean))];
             container.innerHTML = cats.map(cat => `
                 <button onclick="filterByCategory('${cat}')" class="px-4 py-1.5 rounded-xl text-sm font-medium whitespace-nowrap transition ${selectedCategory === cat ? 'bg-primary text-white shadow' : 'bg-white border text-gray-600 hover:bg-gray-100'}">
                     ${cat}
@@ -530,6 +551,7 @@
             const query = document.getElementById('search-input').value.toLowerCase();
 
             const filtered = currentProducts.filter(p => {
+                if (p.isHidden) return false;
                 const matchesCat = selectedCategory === 'Todos' || p.cat === selectedCategory;
                 const matchesQuery = p.title.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query));
                 return matchesCat && matchesQuery;
@@ -549,9 +571,11 @@
             const startIdx = (currentPage - 1) * itemsPerPage;
             const paginatedItems = filtered.slice(startIdx, startIdx + itemsPerPage);
 
-            // SE CAMBIÓ A object-contain Y FONDO NEUTRO PARA QUE LAS FOTOS VERTICALES SALGAN COMPLETAS SIN RECORTARSE
-            grid.innerHTML = paginatedItems.map(p => `
-                <div onclick="openProductDetail(${p.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border cursor-pointer flex flex-col">
+            grid.innerHTML = paginatedItems.map(p => {
+                const isAgotado = p.status === 'Agotado';
+                return `
+                <div onclick="openProductDetail(${p.id})" class="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden border cursor-pointer flex flex-col relative">
+                    ${isAgotado ? '<span class="absolute top-2 right-2 bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-full z-10">Agotado</span>' : ''}
                     <div class="w-full h-52 bg-gray-50 flex items-center justify-center overflow-hidden">
                         <img src="${p.img || 'https://via.placeholder.com/300'}" alt="${p.title}" class="w-full h-full object-contain p-2">
                     </div>
@@ -561,9 +585,9 @@
                         <p class="text-primary font-extrabold text-lg mt-auto pt-2">$${p.price}</p>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
 
-            // Paginación abreviada con puntos suspensivos (1, 2, 3, 4 ... 19)
             if (totalPages > 1) {
                 let pagesHtml = '';
                 let showDotsBefore = false;
@@ -616,7 +640,15 @@
             document.getElementById('detail-product-title').innerText = p.title;
             document.getElementById('detail-product-price').innerText = `$${p.price}`;
             document.getElementById('detail-product-desc').innerText = p.desc || "Sin descripción disponible para este producto.";
-            document.getElementById('detail-product-status').innerText = p.status || "Disponible";
+            
+            const statusEl = document.getElementById('detail-product-status');
+            const statusText = p.status || "Disponible";
+            statusEl.innerText = statusText;
+            if (statusText === 'Agotado') {
+                statusEl.className = 'text-xs px-3 py-1 bg-red-100 text-red-800 rounded-full font-medium';
+            } else {
+                statusEl.className = 'text-xs px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium';
+            }
 
             const thumbsContainer = document.getElementById('detail-gallery-thumbs');
             if (imageList.length > 1) {
@@ -679,12 +711,19 @@
                 return;
             }
 
-            list.innerHTML = filteredAdminProducts.map(p => `
+            list.innerHTML = filteredAdminProducts.map(p => {
+                let badge = p.status === 'Agotado' ? '<span class="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-medium ml-1">Agotado</span>' : '<span class="text-[10px] bg-green-100 text-green-600 px-2 py-0.5 rounded-full font-medium ml-1">Disponible</span>';
+                let hiddenBadge = p.isHidden ? '<span class="text-[10px] bg-gray-200 text-gray-700 px-2 py-0.5 rounded-full font-medium ml-1">Oculto</span>' : '';
+                return `
                 <div class="flex items-center justify-between p-2 bg-white rounded-xl border mb-2">
                     <div class="flex items-center gap-3">
                         <img src="${p.img}" class="w-10 h-10 object-cover rounded-lg">
                         <div>
-                            <h5 class="font-bold text-sm text-gray-800">${p.title}</h5>
+                            <div class="flex items-center flex-wrap">
+                                <h5 class="font-bold text-sm text-gray-800">${p.title}</h5>
+                                ${badge}
+                                ${hiddenBadge}
+                            </div>
                             <p class="text-xs text-gray-500">$${p.price} • ${p.cat}</p>
                         </div>
                     </div>
@@ -693,7 +732,8 @@
                         <button onclick="deleteProduct(${p.id})" class="px-2.5 py-1 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100">Eliminar</button>
                     </div>
                 </div>
-            `).join('');
+            `;
+            }).join('');
         }
 
         window.openProductForm = function() {
@@ -704,6 +744,8 @@
             document.getElementById('form-img-input').value = '';
             document.getElementById('form-gallery-input').value = '';
             document.getElementById('form-desc-input').value = '';
+            document.getElementById('form-status-input').value = 'Disponible';
+            document.getElementById('form-hidden-input').checked = false;
             document.getElementById('form-action-title').innerText = "Nuevo Producto";
             document.getElementById('product-form-container').classList.remove('hidden');
         }
@@ -718,6 +760,8 @@
             document.getElementById('form-img-input').value = p.img || '';
             document.getElementById('form-gallery-input').value = p.gallery ? p.gallery.join(', ') : '';
             document.getElementById('form-desc-input').value = p.desc || '';
+            document.getElementById('form-status-input').value = p.status || 'Disponible';
+            document.getElementById('form-hidden-input').checked = !!p.isHidden;
             document.getElementById('form-action-title').innerText = "Editar Producto";
             document.getElementById('product-form-container').classList.remove('hidden');
         }
@@ -734,6 +778,8 @@
             const img = document.getElementById('form-img-input').value.trim();
             const galleryRaw = document.getElementById('form-gallery-input').value.trim();
             const desc = document.getElementById('form-desc-input').value.trim();
+            const status = document.getElementById('form-status-input').value;
+            const isHidden = document.getElementById('form-hidden-input').checked;
 
             if (!title || !price || !cat) { alert('Completa nombre, categoría y precio.'); return; }
 
@@ -752,10 +798,12 @@
 
             if (id) {
                 const index = currentProducts.findIndex(p => p.id == id);
-                if (index !== -1) currentProducts[index] = { ...currentProducts[index], title, cat, price, img: mainImg, gallery, desc };
+                if (index !== -1) {
+                    currentProducts[index] = { ...currentProducts[index], title, cat, price, img: mainImg, gallery, desc, status, isHidden };
+                }
             } else {
                 const newId = currentProducts.length > 0 ? Math.max(...currentProducts.map(p => Number(p.id) || 0)) + 1 : 1;
-                currentProducts.unshift({ id: newId, title, cat, price, img: mainImg, gallery, desc, status: "Disponible" });
+                currentProducts.unshift({ id: newId, title, cat, price, img: mainImg, gallery, desc, status, isHidden });
             }
 
             try {
