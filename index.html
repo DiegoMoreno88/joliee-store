@@ -101,9 +101,36 @@
                 <button onclick="verifyAdminPassword()" class="w-full bg-primary text-white py-2 rounded-xl font-medium hover:bg-primary-dark transition">Entrar</button>
             </div>
 
-            <!-- Contenido Admin -->
-            <div id="admin-panel-content" class="hidden space-y-6">
-                <div class="bg-gray-50 p-4 rounded-xl border space-y-3">
+            <!-- Contenido Admin con Pestañas -->
+            <div id="admin-panel-content" class="hidden space-y-4">
+                
+                <!-- Navegación por Pestañas (Lista de Productos Primero) -->
+                <div class="flex border-b border-gray-200">
+                    <button id="tab-btn-products" onclick="switchAdminTab('products')" class="py-2 px-4 text-sm font-bold border-b-2 border-primary text-primary transition focus:outline-none">
+                        <i class="fa-solid fa-box-open mr-2"></i>Lista de Productos
+                    </button>
+                    <button id="tab-btn-config" onclick="switchAdminTab('config')" class="py-2 px-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition focus:outline-none">
+                        <i class="fa-solid fa-sliders mr-2"></i>Personalizar Tienda
+                    </button>
+                </div>
+
+                <!-- Pestaña 1: Lista de Productos (Activa por defecto) -->
+                <div id="tab-content-products" class="space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <h4 class="font-bold text-gray-800 text-sm">Productos Registrados</h4>
+                        <div class="relative w-full sm:w-64">
+                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
+                            <input type="text" id="admin-search-input" oninput="renderAdminProductsList()" placeholder="Buscar producto en lista..." class="w-full pl-8 pr-3 py-1.5 border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary bg-white">
+                        </div>
+                        <button onclick="openProductForm()" class="bg-primary text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-primary-dark transition whitespace-nowrap"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
+                    </div>
+                    <div id="admin-products-list" class="space-y-2 max-h-80 overflow-y-auto pr-1 border rounded-xl p-2 bg-gray-50">
+                        <!-- Renderizado de productos para admin -->
+                    </div>
+                </div>
+
+                <!-- Pestaña 2: Personalizar Tienda, Apariencia y Seguridad -->
+                <div id="tab-content-config" class="hidden bg-gray-50 p-4 rounded-xl border space-y-3">
                     <h4 class="font-bold text-gray-800">Personalizar Tienda, Apariencia y Seguridad</h4>
                     <div>
                         <label class="text-xs font-semibold text-gray-600">Nombre de la Tienda</label>
@@ -131,20 +158,6 @@
                     <button onclick="saveStoreConfig()" class="w-full bg-gray-800 text-white py-2 rounded-xl text-sm font-medium hover:bg-gray-900 transition">Guardar Cambios de Apariencia</button>
                 </div>
 
-                <div>
-                    <!-- Encabezado y Buscador optimizados -->
-                    <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mb-3">
-                        <h4 class="font-bold text-gray-800">Lista de Productos</h4>
-                        <div class="relative w-full sm:w-64">
-                            <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-xs"></i>
-                            <input type="text" id="admin-search-input" oninput="renderAdminProductsList()" placeholder="Buscar producto en lista..." class="w-full pl-8 pr-3 py-1.5 border rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-primary bg-white">
-                        </div>
-                        <button onclick="openProductForm()" class="bg-primary text-white px-3 py-1.5 rounded-xl text-sm font-medium hover:bg-primary-dark transition whitespace-nowrap"><i class="fa-solid fa-plus mr-1"></i> Nuevo Producto</button>
-                    </div>
-                    <div id="admin-products-list" class="space-y-2 max-h-48 overflow-y-auto pr-1 border rounded-xl p-2 bg-gray-50">
-                        <!-- Renderizado de productos para admin -->
-                    </div>
-                </div>
             </div>
 
             <!-- Formulario de Producto -->
@@ -207,7 +220,7 @@
         // ==========================================
         // PEGA AQUÍ TUS 220 PRODUCTOS DE RESPALDO
         // ==========================================
-        const fallbackProducts = [
+        const fallbackProducts = [      
   { id: 1, title: "Sérum Facial Hidratante", cat: "Cuidado Facial", price: "12.00", img: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400", status: "Disponible", visibility: "Mostrar", desc: "Sérum con ácido hialurónico para hidratación profunda." },
   { id: 2, title: "Crema Corporal Perfumada", cat: "Splash, Cremas, Perfumes", price: "15.00", img: "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400", status: "Disponible", visibility: "Mostrar", desc: "Aroma duradero y textura suave." },
   { id: 3, title: "Labial Mate Terciopelo", cat: "Labiales", price: "8.00", img: "https://images.unsplash.com/photo-1586495777744-4413f21062fa?w=400", status: "Disponible", visibility: "Mostrar", desc: "Alta pigmentación y larga duración." },
@@ -521,6 +534,25 @@
             }
         }
 
+        window.switchAdminTab = function(tabName) {
+            const btnProducts = document.getElementById('tab-btn-products');
+            const btnConfig = document.getElementById('tab-btn-config');
+            const contentProducts = document.getElementById('tab-content-products');
+            const contentConfig = document.getElementById('tab-content-config');
+
+            if (tabName === 'products') {
+                btnProducts.className = "py-2 px-4 text-sm font-bold border-b-2 border-primary text-primary transition focus:outline-none";
+                btnConfig.className = "py-2 px-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition focus:outline-none";
+                contentProducts.classList.remove('hidden');
+                contentConfig.classList.add('hidden');
+            } else {
+                btnConfig.className = "py-2 px-4 text-sm font-bold border-b-2 border-primary text-primary transition focus:outline-none";
+                btnProducts.className = "py-2 px-4 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition focus:outline-none";
+                contentConfig.classList.remove('hidden');
+                contentProducts.classList.add('hidden');
+            }
+        }
+
         window.renderCategories = function() {
             const container = document.getElementById('categories-container');
             const visibleProds = currentProducts.filter(p => !p.isHidden);
@@ -692,6 +724,7 @@
                 document.getElementById('cfg-color').value = storeConfig.primaryColor || "#881337";
                 document.getElementById('cfg-pass').value = "";
                 document.getElementById('admin-search-input').value = "";
+                switchAdminTab('products');
                 renderAdminProductsList();
             } else {
                 alert("Contraseña incorrecta");
